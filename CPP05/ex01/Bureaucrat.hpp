@@ -43,9 +43,6 @@ class Bureaucrat
     };
 };
 
-std::ostream &operator<<(std::ostream &o, Bureaucrat &b)
-{
-    return (o << b.getName() << ", bureaucrat grade" << b.getGrade() << ".");
-}
+std::ostream &operator<<(std::ostream &o, Bureaucrat &b);
 
 #endif
