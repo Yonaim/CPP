@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string>
 
+class AForm;
+
 class Bureaucrat
 {
   private:
@@ -28,12 +30,11 @@ class Bureaucrat
     void incrementGrade(void);
     void decrementGrade(void);
 
+    void signForm(AForm &form) const;
+
     class GradeTooHighException : public std::exception
     {
-        // std::exception의 what()을 오버라이딩
         const char *what(void) const throw();
-        // 함수 원형의 throw()는 예외(exception)가 발생하지 않음을 의미
-        // C++11부터는 noexcept 키워드로 대체
     };
 
     class GradeTooLowException : public std::exception

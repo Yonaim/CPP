@@ -1,5 +1,5 @@
 #include "Bureaucrat.hpp"
-#include "Form.hpp"
+#include "AForm.hpp"
 
 const std::string Bureaucrat::default_name = "default";
 
@@ -61,7 +61,7 @@ void Bureaucrat::decrementGrade(void)
     _grade++;
 }
 
-void Bureaucrat::signForm(Form &form) const
+void Bureaucrat::signForm(AForm &form) const
 {
     try
     {

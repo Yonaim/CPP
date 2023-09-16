@@ -1,12 +1,12 @@
 #include "Form.hpp"
 #include "Bureaucrat.hpp"
 
-Form::Form() : _name("default"), _grade_to_sign(100), _grade_to_exec(100)
+Form::Form() : _name("default"), _is_signed(false), _grade_to_sign(100), _grade_to_exec(100)
 {
 }
 
 Form::Form(const std::string &name, int grade_to_sign, int grade_to_exec)
-    : _name(name), _grade_to_sign(grade_to_sign), _grade_to_exec(grade_to_exec)
+    : _name(name), _is_signed(false), _grade_to_sign(grade_to_sign), _grade_to_exec(grade_to_exec)
 {
 }
 
@@ -56,10 +56,9 @@ int Form::getGradeRequiredToExecute(void) const
 
 void Form::beSigned(const Bureaucrat &bure)
 {
-    if (_grade_to_sign > bure.getGrade())
+    if (bure.getGrade() > _grade_to_sign)
         throw(GradeTooLowException());
-    else
-        _is_signed = true;
+    _is_signed = true;
 }
 
 const char *Form::GradeTooHighException::what(void) const throw()
@@ -70,4 +69,16 @@ const char *Form::GradeTooHighException::what(void) const throw()
 const char *Form::GradeTooLowException::what(void) const throw()
 {
     return ("Form: GradeTooLowException");
+}
+
+std::ostream &operator<<(std::ostream &o, Form &form)
+{
+    o << "[Form information]"
+      << "\n";
+    o << "Name\t\t: " << form.getName() << "\n";
+    o << "Signed\t\t: " << form.getIsSigned() << "\n";
+    o << "Required grade\t: " << form.getGradeRequiredToSign() << " (to sign)"
+      << ", " << form.getGradeRequiredToExecute() << " (to execute)"
+      << "\n";
+    return (o);
 }
