@@ -5,11 +5,12 @@ CPPFLAGS		=
 
 # *********************************** PROGRAM ******************************** #
 
-NAME			= no_you_need_form
+NAME			= at_least_this_beats
 SRCS			= main.cpp Bureaucrat.cpp AForm.cpp \
 					ShrubberyCreationForm.cpp \
 					RobotomyRequestForm.cpp \
-					PresidentialPardonForm.cpp
+					PresidentialPardonForm.cpp \
+					Intern.cpp
 
 $(NAME): $(SRCS:.cpp=.o)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(DEBUGFLAGS) $^ -o $@

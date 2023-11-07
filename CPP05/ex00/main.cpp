@@ -20,7 +20,7 @@ int main()
     }
     catch (std::exception &e)
     {
-        std::cerr << e.what() << std::endl;
+        std::cerr << "Exception: " << e.what() << std::endl;
     }
 
     // Bureaucrat e1("exception1", 0); // uncaught exception
@@ -44,7 +44,7 @@ int main()
     }
     catch (const std::exception &e)
     {
-        std::cerr << e.what() << '\n';
+        std::cerr << "Exception: " << e.what() << std::endl;
     }
 
     return (0);

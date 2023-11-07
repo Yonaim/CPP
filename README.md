@@ -23,9 +23,12 @@ Repetition and Exceptions
 
 ### CPP06
 C++ casts
+
 ### CPP07
 C++ templates
+
 ### CPP08
 Templated containers, iterators, algorithms
+
 ### CPP09
 STL
