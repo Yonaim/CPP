@@ -5,6 +5,7 @@
 
 int main()
 {
+	// srand(time(0));
     try
     {
         Bureaucrat ok_exec("ok_exec", ShrubberyCreationForm::required_grades_exec);
@@ -37,6 +38,11 @@ int main()
 
         rform.beSigned(ok_sign);
         // rform.beSigned(no_sign);
+    	srand(time(0));
+        rform.execute(ok_exec);
+        rform.execute(ok_exec);
+        rform.execute(ok_exec);
+        rform.execute(ok_exec);
         rform.execute(ok_exec);
         // rform.execute(no_exec);
     }

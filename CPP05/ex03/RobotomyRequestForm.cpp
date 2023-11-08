@@ -31,7 +31,6 @@ void RobotomyRequestForm::execute(Bureaucrat const &executor) const
 {
 	checkExecutable(executor);
 	std::cout << "*some drilling noise*" << std::endl;
-	srand(time(0));
 	int n = rand() % 100; // range 0 to 99
 	if (n < 50)
 		std::cout << this->getTarget() << " has been robotomized successfully" << std::endl;
