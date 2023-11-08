@@ -1,17 +1,21 @@
 #include "AForm.hpp"
 #include "Bureaucrat.hpp"
 
-AForm::AForm() : _target("default"), _is_signed(false), _grade_to_sign(100), _grade_to_exec(100)
+AForm::AForm() : _name("default"), _target(""), _is_signed(false), _grade_to_sign(100), _grade_to_exec(100)
 {
 }
 
-AForm::AForm(const std::string &target, int grade_to_sign, int grade_to_exec)
-    : _target(target), _is_signed(false), _grade_to_sign(grade_to_sign), _grade_to_exec(grade_to_exec)
+AForm::AForm(const std::string &target) : _name("default"), _target(target), _is_signed(false), _grade_to_sign(100), _grade_to_exec(100)
+{
+}
+
+AForm::AForm(const std::string &name, int grade_to_sign, int grade_to_exec)
+    : _name(name), _target(""), _is_signed(false), _grade_to_sign(grade_to_sign), _grade_to_exec(grade_to_exec)
 {
 }
 
 AForm::AForm(const AForm &orig)
-    : _target(orig.getTarget()), _is_signed(orig.getIsSigned()), _grade_to_sign(orig.getGradeRequiredToSign()),
+    : _name(orig.getName()), _target(orig.getTarget()), _is_signed(orig.getIsSigned()), _grade_to_sign(orig.getGradeRequiredToSign()),
       _grade_to_exec(orig.getGradeRequiredToExecute())
 {
 }
@@ -20,7 +24,9 @@ AForm &AForm::operator=(const AForm &orig)
 {
     if (this != &orig)
     {
-        *(const_cast<std::string *>(&_target)) = orig.getTarget();
+        *(const_cast<std::string *>(&_name)) = orig.getName();
+        _target = orig._target;
+        _type = orig._type;
         _is_signed = orig.getIsSigned();
         *(const_cast<int *>(&_grade_to_sign)) = orig.getGradeRequiredToSign();
         *(const_cast<int *>(&_grade_to_exec)) = orig.getGradeRequiredToExecute();
@@ -30,6 +36,11 @@ AForm &AForm::operator=(const AForm &orig)
 
 AForm::~AForm()
 {
+}
+
+std::string AForm::getName(void) const
+{
+    return (_name);
 }
 
 std::string AForm::getTarget(void) const
@@ -64,6 +75,11 @@ void AForm::setType(const std::string &type)
     _type = type;
 }
 
+void AForm::setTarget(const std::string &target)
+{
+    _target = target;
+}
+
 const char *AForm::GradeTooHighException::what(void) const throw()
 {
     return ("Grade Too High");
@@ -91,7 +107,7 @@ std::ostream &operator<<(std::ostream &o, AForm &Aform)
 {
     o << "[Form inAformation]"
       << "\n";
-    o << "Name\t\t: " << Aform.getTarget() << "\n";
+    o << "Name\t\t: " << Aform.getName() << "\n";
     o << "Signed\t\t: " << Aform.getIsSigned() << "\n";
     o << "Required grade\t: " << Aform.getGradeRequiredToSign() << " (to sign)"
       << ", " << Aform.getGradeRequiredToExecute() << " (to execute)"

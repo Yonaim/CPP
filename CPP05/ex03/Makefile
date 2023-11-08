@@ -5,7 +5,7 @@ CPPFLAGS		=
 
 # *********************************** PROGRAM ******************************** #
 
-NAME			= at_least_this_beats
+NAME			= no_you_need_form
 SRCS			= main.cpp Bureaucrat.cpp AForm.cpp \
 					ShrubberyCreationForm.cpp \
 					RobotomyRequestForm.cpp \
@@ -25,7 +25,7 @@ clean:
 
 fclean:
 	rm -f $(SRCS:.cpp=.o)
-	rm -f $(NAME)
+	rm -f $(NAME) home_shrubbery sform_shrubbery
 
 re: 
 	make fclean

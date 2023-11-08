@@ -5,7 +5,6 @@
 
 int main()
 {
-	// srand(time(0));
     try
     {
         Bureaucrat ok_exec("ok_exec", ShrubberyCreationForm::required_grades_exec);

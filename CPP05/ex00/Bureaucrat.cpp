@@ -1,12 +1,12 @@
 #include "Bureaucrat.hpp"
 
-const std::string Bureaucrat::default_target = "default";
+const std::string Bureaucrat::default_name = "default";
 
-Bureaucrat::Bureaucrat() : _target(default_target), _grade(default_grade)
+Bureaucrat::Bureaucrat() : _name(default_name), _grade(default_grade)
 {
 }
 
-Bureaucrat::Bureaucrat(const std::string &target, int grade) : _target(target), _grade(grade)
+Bureaucrat::Bureaucrat(const std::string &name, int grade) : _name(name), _grade(grade)
 {
     if (_grade < highest_grade)
         throw(GradeTooHighException());
@@ -14,7 +14,7 @@ Bureaucrat::Bureaucrat(const std::string &target, int grade) : _target(target), 
         throw(GradeTooLowException());
 }
 
-Bureaucrat::Bureaucrat(const Bureaucrat &orig) : _target(orig.getTarget()), _grade(orig.getGrade())
+Bureaucrat::Bureaucrat(const Bureaucrat &orig) : _name(orig.getName()), _grade(orig.getGrade())
 {
     if (_grade < highest_grade)
         throw(GradeTooHighException());
@@ -26,7 +26,7 @@ Bureaucrat &Bureaucrat::operator=(const Bureaucrat &orig)
 {
     if (this != &orig)
     {
-        _target = orig.getTarget();
+        _name = orig.getName();
         _grade = orig.getGrade();
     }
     return (*this);
@@ -36,9 +36,9 @@ Bureaucrat::~Bureaucrat()
 {
 }
 
-std::string Bureaucrat::getTarget(void) const
+std::string Bureaucrat::getName(void) const
 {
-    return (_target);
+    return (_name);
 }
 
 int Bureaucrat::getGrade(void) const
@@ -72,5 +72,5 @@ const char *Bureaucrat::GradeTooLowException::what(void) const throw()
 
 std::ostream &operator<<(std::ostream &o, Bureaucrat &b)
 {
-    return (o << b.getTarget() << ", bureaucrat grade " << b.getGrade() << ".");
+    return (o << b.getName() << ", bureaucrat grade " << b.getGrade() << ".");
 }

@@ -9,12 +9,10 @@ Intern::Intern()
 
 Intern::Intern(const Intern &orig)
 {
-	(void)orig;
 }
 
 Intern &Intern::operator=(const Intern &orig)
 {
-	(void)orig;
 	return (*this);
 }
 
@@ -33,7 +31,7 @@ AForm *Intern::makeForm(const std::string &name, const std::string &target)
 		{
 			if (name == types[i])
 			{
-				std::cout << "Intern creates " << target << std::endl;
+				std::cout << "Intern creates " << name << std::endl;
 				switch (i)
 				{
 				case 0:

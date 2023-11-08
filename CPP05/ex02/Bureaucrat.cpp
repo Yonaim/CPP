@@ -15,7 +15,7 @@ Bureaucrat::Bureaucrat(const std::string &target, int grade) : _target(target), 
         throw(GradeTooLowException());
 }
 
-Bureaucrat::Bureaucrat(const Bureaucrat &orig) : _target(orig.getTarget()), _grade(orig.getGrade())
+Bureaucrat::Bureaucrat(const Bureaucrat &orig) : _target(orig.getName()), _grade(orig.getGrade())
 {
     if (_grade < highest_grade)
         throw(GradeTooHighException());
@@ -27,7 +27,7 @@ Bureaucrat &Bureaucrat::operator=(const Bureaucrat &orig)
 {
     if (this != &orig)
     {
-        _target = orig.getTarget();
+        _target = orig.getName();
         _grade = orig.getGrade();
     }
     return (*this);
@@ -37,7 +37,7 @@ Bureaucrat::~Bureaucrat()
 {
 }
 
-std::string Bureaucrat::getTarget(void) const
+std::string Bureaucrat::getName(void) const
 {
     return (_target);
 }
@@ -66,11 +66,11 @@ void Bureaucrat::signForm(AForm &form) const
     try
     {
         form.beSigned(*this);
-        std::cout << _target << " signed " << form.getTarget() << '\n';
+        std::cout << _target << " signed " << form.getName() << '\n';
     }
     catch (const std::exception &e)
     {
-        std::cerr << _target << " couldn't sign " << form.getTarget() << " because " << e.what() << '\n';
+        std::cerr << _target << " couldn't sign " << form.getName() << " because " << e.what() << '\n';
     }
 }
 
@@ -79,11 +79,11 @@ void Bureaucrat::executeForm(AForm const &form)
     try
     {
         form.execute(*this);
-        std::cout << _target << " executed " << form.getTarget() << std::endl;
+        std::cout << _target << " executed " << form.getName() << std::endl;
     }
     catch(const std::exception& e)
     {
-        std::cerr << "Error occur while " << _target << " executed " << form.getTarget() << std::endl;
+        std::cerr << "Error occur while " << _target << " executed " << form.getName() << std::endl;
     }
 }
 
@@ -99,5 +99,5 @@ const char *Bureaucrat::GradeTooLowException::what(void) const throw()
 
 std::ostream &operator<<(std::ostream &o, Bureaucrat &b)
 {
-    return (o << b.getTarget() << ", bureaucrat grade " << b.getGrade() << ".");
+    return (o << b.getName() << ", bureaucrat grade " << b.getGrade() << ".");
 }

@@ -12,8 +12,8 @@ class PresidentialPardonForm : public AForm
 {
   private:
   public:
-	static const int required_grades_sign = 25;
-	static const int required_grades_exec = 5;
+    static const int required_grades_sign = 25;
+    static const int required_grades_exec = 5;
 
     PresidentialPardonForm();
     PresidentialPardonForm(const std::string &target);

@@ -10,19 +10,19 @@ class Bureaucrat;
 class Form
 {
   private:
-    const std::string pthread_mutexattr_getpshared;
+    const std::string _name;
     bool _is_signed;
     const int _grade_to_sign;
     const int _grade_to_exec;
 
   public:
     Form();
-    Form(const std::string &targetpthread_mutexattr_getpshared, int grade_to_sign, int grade_to_exec);
+    Form(const std::string &_name, int grade_to_sign, int grade_to_exec);
     Form(const Form &orig);
     Form &operator=(const Form &orig);
     ~Form();
 
-    std::string getTarget(void) const;
+    std::string getName(void) const;
     bool getIsSigned(void) const;
     int getGradeRequiredToSign(void) const;
     int getGradeRequiredToExecute(void) const;

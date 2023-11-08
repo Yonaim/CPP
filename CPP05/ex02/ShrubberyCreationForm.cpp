@@ -4,12 +4,14 @@
 
 ShrubberyCreationForm::ShrubberyCreationForm() : AForm("default", required_grades_sign, required_grades_exec)
 {
+    setTarget("");
     setType("ShrubberyCreationForm");
 }
 
 ShrubberyCreationForm::ShrubberyCreationForm(const std::string &target)
-    : AForm(target, required_grades_sign, required_grades_exec)
+    : AForm("default", required_grades_sign, required_grades_exec)
 {
+    setTarget(target);
     setType("ShrubberyCreationForm");
 }
 
@@ -20,9 +22,8 @@ ShrubberyCreationForm::ShrubberyCreationForm(const ShrubberyCreationForm &orig) 
 
 ShrubberyCreationForm &ShrubberyCreationForm::operator=(const ShrubberyCreationForm &orig)
 {
-    // 1. AForm의 복사 할당 연산자를 이용해 AForm 타입 객체를 얻음
-    // 2. 안전한 down 캐스팅을 위해 다이나믹 캐스팅 사용
-    return *(dynamic_cast<ShrubberyCreationForm *>(&(AForm::operator=(orig))));
+    AForm::operator=(orig);
+    return (*this);
 }
 
 ShrubberyCreationForm::~ShrubberyCreationForm()
@@ -47,7 +48,7 @@ void ShrubberyCreationForm::execute(Bureaucrat const &executor) const
                                     "       |o|        | |         | |\n"
                                     "       |.|        | |         | |\n"
                                     "    \\\\/ ._\\//_ /__/ ,\\_//__\\ /.  \\_//__/_";
-    std::ofstream outfile(getTarget() + "_shrubbery", std::ofstream::out | std::ofstream::trunc);
+    std::ofstream outfile(getName() + "_shrubbery", std::ofstream::out | std::ofstream::trunc);
     if (!outfile.good())
         throw(FileOpenFailedExeption());
     outfile << ascii_trees;
