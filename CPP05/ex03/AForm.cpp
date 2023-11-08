@@ -1,17 +1,17 @@
 #include "AForm.hpp"
 #include "Bureaucrat.hpp"
 
-AForm::AForm() : _name("default"), _is_signed(false), _grade_to_sign(100), _grade_to_exec(100)
+AForm::AForm() : _target("default"), _is_signed(false), _grade_to_sign(100), _grade_to_exec(100)
 {
 }
 
-AForm::AForm(const std::string &name, int grade_to_sign, int grade_to_exec)
-    : _name(name), _is_signed(false), _grade_to_sign(grade_to_sign), _grade_to_exec(grade_to_exec)
+AForm::AForm(const std::string &target, int grade_to_sign, int grade_to_exec)
+    : _target(target), _is_signed(false), _grade_to_sign(grade_to_sign), _grade_to_exec(grade_to_exec)
 {
 }
 
 AForm::AForm(const AForm &orig)
-    : _name(orig.getName()), _is_signed(orig.getIsSigned()), _grade_to_sign(orig.getGradeRequiredToSign()),
+    : _target(orig.getTarget()), _is_signed(orig.getIsSigned()), _grade_to_sign(orig.getGradeRequiredToSign()),
       _grade_to_exec(orig.getGradeRequiredToExecute())
 {
 }
@@ -20,7 +20,7 @@ AForm &AForm::operator=(const AForm &orig)
 {
     if (this != &orig)
     {
-        *(const_cast<std::string *>(&_name)) = orig.getName();
+        *(const_cast<std::string *>(&_target)) = orig.getTarget();
         _is_signed = orig.getIsSigned();
         *(const_cast<int *>(&_grade_to_sign)) = orig.getGradeRequiredToSign();
         *(const_cast<int *>(&_grade_to_exec)) = orig.getGradeRequiredToExecute();
@@ -32,9 +32,9 @@ AForm::~AForm()
 {
 }
 
-std::string AForm::getName(void) const
+std::string AForm::getTarget(void) const
 {
-    return (_name);
+    return (_target);
 }
 
 bool AForm::getIsSigned(void) const
@@ -91,7 +91,7 @@ std::ostream &operator<<(std::ostream &o, AForm &Aform)
 {
     o << "[Form inAformation]"
       << "\n";
-    o << "Name\t\t: " << Aform.getName() << "\n";
+    o << "Name\t\t: " << Aform.getTarget() << "\n";
     o << "Signed\t\t: " << Aform.getIsSigned() << "\n";
     o << "Required grade\t: " << Aform.getGradeRequiredToSign() << " (to sign)"
       << ", " << Aform.getGradeRequiredToExecute() << " (to execute)"

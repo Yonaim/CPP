@@ -34,7 +34,7 @@ void RobotomyRequestForm::execute(Bureaucrat const &executor) const
 	srand(time(0));
 	int n = rand() % 100; // range 0 to 99
 	if (n < 50)
-		std::cout << this->getName() << " has been robotomized successfully" << std::endl;
+		std::cout << this->getTarget() << " has been robotomized successfully" << std::endl;
 	else
-		std::cout << this->getName() << " has been robotomized failed" << std::endl;
+		std::cout << this->getTarget() << " has been robotomized failed" << std::endl;
 }

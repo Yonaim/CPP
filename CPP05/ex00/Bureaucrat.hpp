@@ -8,9 +8,9 @@
 class Bureaucrat
 {
   private:
-    std::string _name;
+    std::string _target;
     int _grade;
-    static const std::string default_name;
+    static const std::string default_target;
     static const int default_grade = 100;
 
   public:
@@ -18,12 +18,12 @@ class Bureaucrat
     static const int lowest_grade = 150;
 
     Bureaucrat();
-    Bureaucrat(const std::string &name, int grade);
+    Bureaucrat(const std::string &target, int grade);
     Bureaucrat(const Bureaucrat &orig);
     Bureaucrat &operator=(const Bureaucrat &orig);
     ~Bureaucrat();
 
-    std::string getName(void) const;
+    std::string getTarget(void) const;
     int getGrade(void) const;
     void incrementGrade(void);
     void decrementGrade(void);

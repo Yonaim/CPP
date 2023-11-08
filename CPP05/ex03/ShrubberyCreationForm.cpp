@@ -47,7 +47,7 @@ void ShrubberyCreationForm::execute(Bureaucrat const &executor) const
       "       |o|        | |         | |\n"
       "       |.|        | |         | |\n"
 	  "    \\\\/ ._\\//_ /__/ ,\\_//__\\ /.  \\_//__/_";
-    std::ofstream outfile(getName() + "_shrubbery", \
+    std::ofstream outfile(getTarget() + "_shrubbery", \
 						std::ofstream::out | std::ofstream::trunc);
 	if (!outfile.good())
 		throw (FileOpenFailedExeption());
