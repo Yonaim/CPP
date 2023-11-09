@@ -1,0 +1,285 @@
+#include "ScalarConverter.hpp"
+#include <cctype>
+#include <cmath>
+#include <iostream>
+#include <limits>
+#include <iomanip>
+
+std::string ScalarConverter::_literal;
+int ScalarConverter::_type;
+long double ScalarConverter::_actual;
+
+char ScalarConverter::actualToChar(void)
+{
+    return (static_cast<char>(_actual));
+}
+
+int ScalarConverter::actualToInt(void)
+{
+    return (static_cast<int>(_actual));
+}
+
+float ScalarConverter::actualToFloat(void)
+{
+    return (static_cast<float>(_actual));
+}
+
+double ScalarConverter::actualToDouble(void)
+{
+    return (static_cast<double>(_actual));
+}
+
+void ScalarConverter::checkIfTypeChar(void)
+{
+    if (_literal.length() == 1 || (_literal.length() == 3 && _literal[0] == '\'' && _literal[2] == '\''))
+    {
+        _type = SCALAR_CHAR;
+        if (_literal.length() == 1)
+            _actual = _literal[0];
+        else
+            _actual = _literal[1];
+        return;
+    }
+}
+
+void ScalarConverter::checkIfTypeInt(void)
+{
+    const char *literal_c = _literal.c_str();
+    char *endptr;
+
+    long value_l = strtol(literal_c, &endptr, 10);
+    if (*endptr == '\0')
+    {
+        _type = SCALAR_INT;
+        _actual = value_l;
+        return;
+    }
+}
+
+void ScalarConverter::checkIfTypeFloat(void)
+{
+    // float pseudo literal check
+    const std::string pseudo[4] = {"-inff", "+inff", "inff", "nanf"};
+    for (int i = 0; i < 4; i++)
+    {
+        if (_literal == pseudo[i])
+        {
+            _type = SCALAR_FLOAT;
+            switch (i)
+            {
+            case 0:
+                _actual = -INFINITY;
+                break;
+            case 1:
+                _actual = INFINITY;
+                break;
+            case 2:
+                _actual = INFINITY;
+                break;
+            case 3:
+                _actual = NAN;
+                break;
+            }
+            return;
+        }
+    }
+
+    // float literal check
+    const char *literal_c = _literal.c_str();
+    double value_d = strtod(literal_c, NULL);
+
+    // 숫자를 포함한 상태에서 문자 'f' 및 '.'가 각각 하나씩 있어야 함
+    // 'f'는 무조건 끝
+    // "42.f" (o)  ".42f" (o)  "42f" (x)  ".f" (x)
+    // if (*(_literal.end()) != 'f')
+    if (_literal == ".f")
+        return;
+    if (!(*std::prev(_literal.end()) == 'f' && *_literal.end() == '\0'))
+        return;
+    if (_literal.find_first_of('f') != _literal.find_last_of('f'))
+        return;
+    if (_literal.find('.') == std::string::npos || _literal.find_first_of('.') != _literal.find_last_of('.'))
+        return;
+
+    // 마지막 자리 f를 제외하고 순회하며 체크
+    std::string::const_iterator it = _literal.begin();
+    if (*_literal.begin() == '-')
+        it++;
+    while (it < _literal.end())
+    {
+        if (!(isdigit(*it) || *it == '.' || *it == 'f'))
+            return;
+        it++;
+    }
+
+    _type = SCALAR_FLOAT;
+    _actual = value_d;
+}
+
+void ScalarConverter::checkIfTypeDouble(void)
+{
+    // double pseudo literal check
+    const std::string pseudo[4] = {"-inf", "+inf", "inf", "nan"};
+    for (int i = 0; i < 4; i++)
+    {
+        if (_literal == pseudo[i])
+        {
+            _type = SCALAR_DOUBLE;
+            switch (i)
+            {
+            case 0:
+                _actual = -INFINITY;
+                break;
+            case 1:
+                _actual = INFINITY;
+                break;
+            case 2:
+                _actual = INFINITY;
+                break;
+            case 3:
+                _actual = NAN;
+                break;
+            }
+            return;
+        }
+    }
+
+    // double literal check
+    const char *literal_c = _literal.c_str();
+    double value_ld = strtold(literal_c, NULL);
+
+    // 숫자를 포함한 상태에서 문자 '.'가 하나 있어야 함
+    // "42.42" (o) "42." (o) ".42" (o) "." (x)
+    if (_literal == ".")
+        return;
+    if (_literal.find('.') == std::string::npos || _literal.find_first_of('.') != _literal.find_last_of('.'))
+        return;
+
+    // 마지막 자리 f를 제외하고 순회하며 체크
+    std::string::const_iterator it = _literal.begin();
+    if (*_literal.begin() == '-')
+        it++;
+    while (it < _literal.end())
+    {
+        if (!(isdigit(*it) || *it == '.'))
+            return;
+        it++;
+    }
+
+    _type = SCALAR_DOUBLE;
+    _actual = value_ld;
+}
+
+void ScalarConverter::detectType(void)
+{
+    checkIfTypeChar();
+    checkIfTypeInt();
+    checkIfTypeFloat();
+    checkIfTypeDouble();
+    // std::cout << "type: " << _type << std::endl;
+    // std::cout << "actual: " << std::fixed << _actual << std::endl;
+    if (_type == SCALAR_NONE)
+        throw(DoesNotBelongException());
+}
+
+void ScalarConverter::printToChar(void)
+{
+    std::cout << "char: ";
+    if (std::numeric_limits<int>::min() <= _actual && _actual <= std::numeric_limits<int>::max())
+    {
+        if (std::isprint(_actual))
+            std::cout << '\'' << actualToChar() << '\'' << std::endl;
+        else
+            std::cout << "Non displayable" << std::endl;
+    }
+    else
+        std::cout << "impossible" << std::endl;
+}
+
+void ScalarConverter::printToInt(void)
+{
+    std::cout << "int: ";
+    if (std::numeric_limits<int>::min() <= _actual && _actual <= std::numeric_limits<int>::max())
+        std::cout << actualToInt() << std::endl;
+    else
+        std::cout << "impossible" << std::endl;
+}
+
+void ScalarConverter::printToFloat(void)
+{
+    std::cout << "float: ";
+    if (std::isnan(_actual) || std::isinf(_actual))
+        std::cout << actualToFloat() << 'f' << std::endl;
+    else if (-std::numeric_limits<float>::max() <= _actual && _actual <= std::numeric_limits<float>::max())
+    {
+        if (_actual == truncl(_actual))
+            std::cout << actualToFloat() << ".0f" << std::endl;
+        else
+            std::cout << std::setprecision(std::numeric_limits<float>::digits10) << actualToFloat() << 'f' << std::endl;
+    }
+    else
+        std::cout << "impossible" << std::endl;
+}
+
+void ScalarConverter::printToDouble(void)
+{
+    std::cout << "double: ";
+    if (std::isnan(_actual) || std::isinf(_actual))
+        std::cout << actualToDouble() << std::endl;
+    else if (-std::numeric_limits<double>::max() <= _actual && _actual <= std::numeric_limits<double>::max())
+    {
+        if (_actual == truncl(_actual))
+            std::cout << actualToDouble() << ".0" << std::endl;
+        else
+            std::cout << std::setprecision(std::numeric_limits<double>::digits10) << actualToDouble() << std::endl;
+    }
+    else
+        std::cout << "impossible" << std::endl;
+}
+
+/*
+1. 들어온 리터럴에 대해 타입 판별 (char, int, float, double 순서대로)
+2. actual type으로 컨버팅
+*/
+void ScalarConverter::convert(std::string &literal)
+{
+    _literal = literal;
+    _type = SCALAR_NONE;
+    try
+    {
+        detectType();
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "\033[1;31m" << e.what() << "\033[0m" << '\n';
+        return;
+    }
+    printToChar();
+    printToInt();
+    printToFloat();
+    printToDouble();
+}
+
+const char *ScalarConverter::DoesNotBelongException::what(void) const throw()
+{
+    return ("This literal does not belong to scalar types");
+}
+
+ScalarConverter::ScalarConverter()
+{
+}
+
+ScalarConverter::~ScalarConverter()
+{
+}
+
+ScalarConverter::ScalarConverter(const ScalarConverter &orig)
+{
+    (void)orig;
+}
+
+ScalarConverter &ScalarConverter::operator=(const ScalarConverter &orig)
+{
+    (void)orig;
+    return (*this);
+}
