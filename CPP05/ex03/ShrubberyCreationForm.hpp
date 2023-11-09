@@ -12,8 +12,8 @@ class ShrubberyCreationForm : public AForm
 {
   private:
   public:
-	static const int required_grades_sign = 145;
-	static const int required_grades_exec = 137;
+    static const int required_grades_sign = 145;
+    static const int required_grades_exec = 137;
 
     ShrubberyCreationForm();
     ShrubberyCreationForm(const std::string &target);

@@ -12,8 +12,8 @@ class RobotomyRequestForm : public AForm
 {
   private:
   public:
-	static const int required_grades_sign = 72;
-	static const int required_grades_exec = 45;
+    static const int required_grades_sign = 72;
+    static const int required_grades_exec = 45;
 
     RobotomyRequestForm();
     RobotomyRequestForm(const std::string &target);

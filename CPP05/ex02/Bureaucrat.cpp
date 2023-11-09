@@ -1,13 +1,13 @@
 #include "Bureaucrat.hpp"
 #include "AForm.hpp"
 
-const std::string Bureaucrat::default_target = "default";
+const std::string Bureaucrat::default_name = "default";
 
-Bureaucrat::Bureaucrat() : _target(default_target), _grade(default_grade)
+Bureaucrat::Bureaucrat() : _name(default_name), _grade(default_grade)
 {
 }
 
-Bureaucrat::Bureaucrat(const std::string &target, int grade) : _target(target), _grade(grade)
+Bureaucrat::Bureaucrat(const std::string &name, int grade) : _name(name), _grade(grade)
 {
     if (_grade < highest_grade)
         throw(GradeTooHighException());
@@ -15,7 +15,7 @@ Bureaucrat::Bureaucrat(const std::string &target, int grade) : _target(target), 
         throw(GradeTooLowException());
 }
 
-Bureaucrat::Bureaucrat(const Bureaucrat &orig) : _target(orig.getName()), _grade(orig.getGrade())
+Bureaucrat::Bureaucrat(const Bureaucrat &orig) : _name(orig.getName()), _grade(orig.getGrade())
 {
     if (_grade < highest_grade)
         throw(GradeTooHighException());
@@ -27,7 +27,7 @@ Bureaucrat &Bureaucrat::operator=(const Bureaucrat &orig)
 {
     if (this != &orig)
     {
-        _target = orig.getName();
+        *(const_cast<std::string *>(&_name)) = orig.getName();
         _grade = orig.getGrade();
     }
     return (*this);
@@ -39,7 +39,7 @@ Bureaucrat::~Bureaucrat()
 
 std::string Bureaucrat::getName(void) const
 {
-    return (_target);
+    return (_name);
 }
 
 int Bureaucrat::getGrade(void) const
@@ -66,11 +66,11 @@ void Bureaucrat::signForm(AForm &form) const
     try
     {
         form.beSigned(*this);
-        std::cout << _target << " signed " << form.getName() << '\n';
+        std::cout << _name << " signed " << form.getName() << '\n';
     }
     catch (const std::exception &e)
     {
-        std::cerr << _target << " couldn't sign " << form.getName() << " because " << e.what() << '\n';
+        std::cerr << _name << " couldn't sign " << form.getName() << " because " << e.what() << '\n';
     }
 }
 
@@ -79,11 +79,11 @@ void Bureaucrat::executeForm(AForm const &form)
     try
     {
         form.execute(*this);
-        std::cout << _target << " executed " << form.getName() << std::endl;
+        std::cout << _name << " executed " << form.getName() << std::endl;
     }
-    catch(const std::exception& e)
+    catch (const std::exception &e)
     {
-        std::cerr << "Error occur while " << _target << " executed " << form.getName() << std::endl;
+        std::cerr << "Error occur while " << _name << " executed " << form.getName() << std::endl;
     }
 }
 

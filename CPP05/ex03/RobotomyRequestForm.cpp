@@ -1,22 +1,19 @@
 #include "RobotomyRequestForm.hpp"
 #include <stdlib.h>
 
-RobotomyRequestForm::RobotomyRequestForm() : AForm("default", required_grades_sign, required_grades_exec)
+RobotomyRequestForm::RobotomyRequestForm() : AForm("RobotomyRequestForm", required_grades_sign, required_grades_exec)
 {
     setTarget("");
-    setType("RobotomyRequestForm");
 }
 
 RobotomyRequestForm::RobotomyRequestForm(const std::string &target)
-    : AForm("default", required_grades_sign, required_grades_exec)
+    : AForm("RobotomyRequestForm", required_grades_sign, required_grades_exec)
 {
     setTarget(target);
-    setType("RobotomyRequestForm");
 }
 
 RobotomyRequestForm::RobotomyRequestForm(const RobotomyRequestForm &orig) : AForm(orig)
 {
-    setType("RobotomyRequestForm");
 }
 
 RobotomyRequestForm &RobotomyRequestForm::operator=(const RobotomyRequestForm &orig)

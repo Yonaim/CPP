@@ -13,10 +13,10 @@ int main()
 
         // Bureaucrat e1("exception1", Bureaucrat::highest_grade - 1);
         // Bureaucrat e2("exception2", Bureaucrat::lowest_grade + 1);
-		// 위에서 exception 던져질시 실행되지 않는다
+        // 위에서 exception 던져질시 실행되지 않는다
 
         std::cout << b3 << std::endl;
-		// 위에서 exception 던져질시 실행되지 않는다
+        // 위에서 exception 던져질시 실행되지 않는다
     }
     catch (std::exception &e)
     {
@@ -26,7 +26,7 @@ int main()
     // Bureaucrat e1("exception1", 0); // uncaught exception
     // Bureaucrat e2("exception2", 151); // uncaught exception
 
-	std::cout << '\n'; 
+    std::cout << '\n';
 
     try
     {

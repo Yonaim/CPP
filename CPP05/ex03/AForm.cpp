@@ -5,18 +5,21 @@ AForm::AForm() : _name("default"), _target(""), _is_signed(false), _grade_to_sig
 {
 }
 
-AForm::AForm(const std::string &target) : _name("default"), _target(target), _is_signed(false), _grade_to_sign(100), _grade_to_exec(100)
-{
-}
-
 AForm::AForm(const std::string &name, int grade_to_sign, int grade_to_exec)
     : _name(name), _target(""), _is_signed(false), _grade_to_sign(grade_to_sign), _grade_to_exec(grade_to_exec)
+{
+    CheckIsValidGrade(grade_to_sign);
+	CheckIsValidGrade(grade_to_exec);
+}
+
+AForm::AForm(const std::string &target)
+    : _name("default"), _target(target), _is_signed(false), _grade_to_sign(100), _grade_to_exec(100)
 {
 }
 
 AForm::AForm(const AForm &orig)
-    : _name(orig.getName()), _target(orig.getTarget()), _is_signed(orig.getIsSigned()), _grade_to_sign(orig.getGradeRequiredToSign()),
-      _grade_to_exec(orig.getGradeRequiredToExecute())
+    : _name(orig.getName()), _target(orig.getTarget()), _is_signed(orig.getIsSigned()),
+      _grade_to_sign(orig.getGradeRequiredToSign()), _grade_to_exec(orig.getGradeRequiredToExecute())
 {
 }
 
@@ -26,7 +29,6 @@ AForm &AForm::operator=(const AForm &orig)
     {
         *(const_cast<std::string *>(&_name)) = orig.getName();
         _target = orig._target;
-        _type = orig._type;
         _is_signed = orig.getIsSigned();
         *(const_cast<int *>(&_grade_to_sign)) = orig.getGradeRequiredToSign();
         *(const_cast<int *>(&_grade_to_exec)) = orig.getGradeRequiredToExecute();
@@ -70,11 +72,6 @@ void AForm::beSigned(const Bureaucrat &bure)
     _is_signed = true;
 }
 
-void AForm::setType(const std::string &type)
-{
-    _type = type;
-}
-
 void AForm::setTarget(const std::string &target)
 {
     _target = target;
@@ -93,6 +90,14 @@ const char *AForm::GradeTooLowException::what(void) const throw()
 const char *AForm::UnsignedException::what(void) const throw()
 {
     return ("Unsigned Form");
+}
+
+void AForm::CheckIsValidGrade(int grade) const
+{
+   if (grade < Bureaucrat::highest_grade)
+        throw(GradeTooHighException());
+	else if (grade > Bureaucrat::lowest_grade)
+        throw(GradeTooLowException());
 }
 
 void AForm::checkExecutable(const Bureaucrat &bure) const

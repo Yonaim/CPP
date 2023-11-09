@@ -26,7 +26,7 @@ Bureaucrat &Bureaucrat::operator=(const Bureaucrat &orig)
 {
     if (this != &orig)
     {
-        _name = orig.getName();
+        *(const_cast<std::string *>(&_name)) = orig.getName();
         _grade = orig.getGrade();
     }
     return (*this);

@@ -25,7 +25,7 @@ clean:
 
 fclean:
 	rm -f $(SRCS:.cpp=.o)
-	rm -f $(NAME) home_shrubbery sform_shrubbery
+	rm -f $(NAME) target1_shrubbery
 
 re: 
 	make fclean

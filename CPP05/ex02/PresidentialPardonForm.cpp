@@ -1,22 +1,20 @@
 #include "PresidentialPardonForm.hpp"
 #include <stdlib.h>
 
-PresidentialPardonForm::PresidentialPardonForm() : AForm("default", required_grades_sign, required_grades_exec)
+PresidentialPardonForm::PresidentialPardonForm()
+    : AForm("PresidentialPardonForm", required_grades_sign, required_grades_exec)
 {
     setTarget("");
-    setType("PresidentialPardonForm");
 }
 
 PresidentialPardonForm::PresidentialPardonForm(const std::string &target)
-    : AForm("default", required_grades_sign, required_grades_exec)
+    : AForm("PresidentialPardonForm", required_grades_sign, required_grades_exec)
 {
     setTarget(target);
-    setType("PresidentialPardonForm");
 }
 
 PresidentialPardonForm::PresidentialPardonForm(const PresidentialPardonForm &orig) : AForm(orig)
 {
-    setType("PresidentialPardonForm");
 }
 
 PresidentialPardonForm &PresidentialPardonForm::operator=(const PresidentialPardonForm &orig)

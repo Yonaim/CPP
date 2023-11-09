@@ -1,7 +1,7 @@
 #include "Bureaucrat.hpp"
-#include "ShrubberyCreationForm.hpp"
-#include "RobotomyRequestForm.hpp"
 #include "PresidentialPardonForm.hpp"
+#include "RobotomyRequestForm.hpp"
+#include "ShrubberyCreationForm.hpp"
 
 int main()
 {
@@ -37,7 +37,7 @@ int main()
 
         rform.beSigned(ok_sign);
         // rform.beSigned(no_sign);
-    	srand(time(0));
+        srand(time(0));
         rform.execute(ok_exec);
         rform.execute(ok_exec);
         rform.execute(ok_exec);
@@ -77,11 +77,11 @@ int main()
     {
         Bureaucrat master("master", 1);
         ShrubberyCreationForm sform("sform");
-        
+
         sform.beSigned(master);
         master.executeForm(sform);
     }
-    catch(const std::exception& e)
+    catch (const std::exception &e)
     {
         std::cerr << e.what() << '\n';
         std::cout << "Catched in main function" << std::endl;

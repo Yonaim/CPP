@@ -15,6 +15,8 @@ class Form
     const int _grade_to_sign;
     const int _grade_to_exec;
 
+    void CheckIsValidGrade(int grade) const;
+
   public:
     Form();
     Form(const std::string &_name, int grade_to_sign, int grade_to_exec);

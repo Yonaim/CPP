@@ -2,22 +2,20 @@
 #include "Bureaucrat.hpp"
 #include <fstream>
 
-ShrubberyCreationForm::ShrubberyCreationForm() : AForm("default", required_grades_sign, required_grades_exec)
+ShrubberyCreationForm::ShrubberyCreationForm()
+    : AForm("ShrubberyCreationForm", required_grades_sign, required_grades_exec)
 {
     setTarget("");
-    setType("ShrubberyCreationForm");
 }
 
 ShrubberyCreationForm::ShrubberyCreationForm(const std::string &target)
-    : AForm("default", required_grades_sign, required_grades_exec)
+    : AForm("ShrubberyCreationForm", required_grades_sign, required_grades_exec)
 {
     setTarget(target);
-    setType("ShrubberyCreationForm");
 }
 
 ShrubberyCreationForm::ShrubberyCreationForm(const ShrubberyCreationForm &orig) : AForm(orig)
 {
-    setType("ShrubberyCreationForm");
 }
 
 ShrubberyCreationForm &ShrubberyCreationForm::operator=(const ShrubberyCreationForm &orig)
@@ -48,7 +46,7 @@ void ShrubberyCreationForm::execute(Bureaucrat const &executor) const
                                     "       |o|        | |         | |\n"
                                     "       |.|        | |         | |\n"
                                     "    \\\\/ ._\\//_ /__/ ,\\_//__\\ /.  \\_//__/_";
-    std::ofstream outfile(getName() + "_shrubbery", std::ofstream::out | std::ofstream::trunc);
+    std::ofstream outfile(getTarget() + "_shrubbery", std::ofstream::out | std::ofstream::trunc);
     if (!outfile.good())
         throw(FileOpenFailedExeption());
     outfile << ascii_trees;

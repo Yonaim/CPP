@@ -8,6 +8,8 @@ Form::Form() : _name("default"), _is_signed(false), _grade_to_sign(100), _grade_
 Form::Form(const std::string &name, int grade_to_sign, int grade_to_exec)
     : _name(name), _is_signed(false), _grade_to_sign(grade_to_sign), _grade_to_exec(grade_to_exec)
 {
+	CheckIsValidGrade(grade_to_sign);
+	CheckIsValidGrade(grade_to_exec);
 }
 
 Form::Form(const Form &orig)
@@ -59,6 +61,14 @@ void Form::beSigned(const Bureaucrat &bure)
     if (bure.getGrade() > _grade_to_sign)
         throw(GradeTooLowException());
     _is_signed = true;
+}
+
+void Form::CheckIsValidGrade(int grade) const
+{
+   if (grade < Bureaucrat::highest_grade)
+        throw(GradeTooHighException());
+	else if (grade > Bureaucrat::lowest_grade)
+        throw(GradeTooLowException());
 }
 
 const char *Form::GradeTooHighException::what(void) const throw()

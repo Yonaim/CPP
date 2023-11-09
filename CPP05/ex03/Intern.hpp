@@ -1,8 +1,8 @@
 #ifndef INTERN_HPP
 #define INTERN_HPP
 
-#include <exception>
 #include "AForm.hpp"
+#include <exception>
 
 class Intern
 {
@@ -13,12 +13,12 @@ class Intern
     Intern &operator=(const Intern &orig);
     ~Intern();
 
-	AForm *makeForm(const std::string &name, const std::string &target);
+    AForm *makeForm(const std::string &name, const std::string &target) const;
 
-	class DoesNotExistFormType : public std::exception
-	{
-		const char *what(void) const throw();
-	};
+    class DoesNotExistFormName : public std::exception
+    {
+        const char *what(void) const throw();
+    };
 };
 
 #endif
