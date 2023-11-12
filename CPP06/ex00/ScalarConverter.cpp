@@ -1,9 +1,10 @@
 #include "ScalarConverter.hpp"
 #include <cctype>
 #include <cmath>
+#include <errno.h>
+#include <iomanip>
 #include <iostream>
 #include <limits>
-#include <iomanip>
 
 std::string ScalarConverter::_literal;
 int ScalarConverter::_type;
@@ -47,11 +48,18 @@ void ScalarConverter::checkIfTypeInt(void)
     const char *literal_c = _literal.c_str();
     char *endptr;
 
-    long value_l = strtol(literal_c, &endptr, 10);
+    long double value = strtold(literal_c, &endptr);
+
+    if (errno == ERANGE)
+    {
+        printf("range error, got ");
+        errno = 0;
+    }
+
     if (*endptr == '\0')
     {
         _type = SCALAR_INT;
-        _actual = value_l;
+        _actual = value;
         return;
     }
 }
@@ -86,7 +94,7 @@ void ScalarConverter::checkIfTypeFloat(void)
 
     // float literal check
     const char *literal_c = _literal.c_str();
-    double value_d = strtod(literal_c, NULL);
+    long double value = strtold(literal_c, NULL);
 
     // 숫자를 포함한 상태에서 문자 'f' 및 '.'가 각각 하나씩 있어야 함
     // 'f'는 무조건 끝
@@ -113,7 +121,7 @@ void ScalarConverter::checkIfTypeFloat(void)
     }
 
     _type = SCALAR_FLOAT;
-    _actual = value_d;
+    _actual = value;
 }
 
 void ScalarConverter::checkIfTypeDouble(void)
@@ -146,7 +154,7 @@ void ScalarConverter::checkIfTypeDouble(void)
 
     // double literal check
     const char *literal_c = _literal.c_str();
-    double value_ld = strtold(literal_c, NULL);
+    long double value = strtold(literal_c, NULL);
 
     // 숫자를 포함한 상태에서 문자 '.'가 하나 있어야 함
     // "42.42" (o) "42." (o) ".42" (o) "." (x)
@@ -167,7 +175,7 @@ void ScalarConverter::checkIfTypeDouble(void)
     }
 
     _type = SCALAR_DOUBLE;
-    _actual = value_ld;
+    _actual = value;
 }
 
 void ScalarConverter::detectType(void)
@@ -176,8 +184,8 @@ void ScalarConverter::detectType(void)
     checkIfTypeInt();
     checkIfTypeFloat();
     checkIfTypeDouble();
-    // std::cout << "type: " << _type << std::endl;
-    // std::cout << "actual: " << std::fixed << _actual << std::endl;
+    std::cout << "type: " << _type << std::endl;
+    std::cout << "actual: " << std::fixed << _actual << std::endl;
     if (_type == SCALAR_NONE)
         throw(DoesNotBelongException());
 }
@@ -210,10 +218,10 @@ void ScalarConverter::printToFloat(void)
     std::cout << "float: ";
     if (std::isnan(_actual) || std::isinf(_actual))
         std::cout << actualToFloat() << 'f' << std::endl;
-    else if (-std::numeric_limits<float>::max() <= _actual && _actual <= std::numeric_limits<float>::max())
+    else if (-std::numeric_limits<float>::min() <= _actual && _actual <= std::numeric_limits<float>::max())
     {
         if (_actual == truncl(_actual))
-            std::cout << actualToFloat() << ".0f" << std::endl;
+            std::cout << std::setprecision(0) << actualToFloat() << ".0f" << std::endl;
         else
             std::cout << std::setprecision(std::numeric_limits<float>::digits10) << actualToFloat() << 'f' << std::endl;
     }

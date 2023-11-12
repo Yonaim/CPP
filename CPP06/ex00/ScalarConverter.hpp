@@ -6,7 +6,7 @@
 
 enum scalar_types
 {
-    SCALAR_CHAR,
+    SCALAR_CHAR = 0,
     SCALAR_INT,
     SCALAR_FLOAT,
     SCALAR_DOUBLE,
