@@ -12,14 +12,6 @@ enum scalar_types
     SCALAR_DOUBLE,
     SCALAR_NONE
 };
-
-enum convert_result
-{
-    CONVERT_OK,
-    CONVERT_NON_DISPLAYABLE,
-    CONVERT_IMPOSSIBLE,
-};
-
 class ScalarConverter
 {
   private:
@@ -34,7 +26,6 @@ class ScalarConverter
     static long double _actual; // converted from string to actual type value
 
     static void detectType(void);
-    static void printDetectedResult(void);
 
     static void checkIfTypeChar(void);
     static void checkIfTypeInt(void);
@@ -53,7 +44,7 @@ class ScalarConverter
 
   public:
     static void convert(std::string &literal);
-
+    static void printDetectedResult(void);
     class DoesNotBelongAnyTypesException : public std::exception
     {
         const char *what(void) const throw();

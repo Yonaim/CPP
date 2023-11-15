@@ -184,7 +184,7 @@ void ScalarConverter::detectType(void)
 void ScalarConverter::printToChar(void)
 {
     std::cout << "char: ";
-    if (std::numeric_limits<int>::min() <= _actual && _actual <= std::numeric_limits<int>::max())
+    if (std::numeric_limits<char>::min() <= _actual && _actual <= std::numeric_limits<char>::max())
     {
         if (std::isprint(_actual))
             std::cout << '\'' << actualToChar() << '\'' << std::endl;
@@ -256,7 +256,6 @@ void ScalarConverter::convert(std::string &literal)
         if (typeid(e) == typeid(DoesNotBelongAnyTypesException))
             return;
     }
-    // printDetectedResult();
     printToChar();
     printToInt();
     printToFloat();
@@ -265,8 +264,9 @@ void ScalarConverter::convert(std::string &literal)
 
 void ScalarConverter::printDetectedResult(void)
 {
-    std::cout << std::fixed << std::setprecision(6);
-	// std::cout << std::scientific;
+    std::cout << "--------------------------------" << std::endl;
+    // std::cout << std::fixed << std::setprecision(6);
+	std::cout << std::scientific;
     std::cout << "type: " << _type << std::endl;
     std::cout << "actual: " << _actual << std::endl;
     std::cout << "--------------------------------" << std::endl;
