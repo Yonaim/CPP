@@ -69,7 +69,7 @@ casting(형변환)을 처음 소개하고, 이를 이용한 간단한 프로그�
 
 1. You have to first detect the type of the literal passed as parameter
 2. convert it from string to its actual type
-3 then convert it explicitly to the three other data types
+3. then convert it explicitly to the three other data types
 4. Lastly, display the results as shown below
 
 스칼라 타입과 프리미티브 타입은 다르며, 과제에서 일컫는 type은 스칼라 타입이라는 점을 분명히 인지해야 함.
@@ -89,6 +89,6 @@ int main(int argc, char *argv[])
 
     std::string literal(argv[1]);
     ScalarConverter::convert(literal);
-	ScalarConverter::printDetectedResult();
+	// ScalarConverter::printDetectedResult();
 	// printForCheck();
 }
