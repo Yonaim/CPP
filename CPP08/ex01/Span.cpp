@@ -34,21 +34,13 @@ void Span::addNumber(int n)
 }
 
 // 정렬 후 인접한 수들끼리의 차를 차례대로 계산해보고 가장 작은 값 
-int Span::shortestSpan(void)
+int Span::shortestSpan(void) const
 {
 	if (_size < 2)
 		throw(ThereIsNoSpanException());
 
 	std::vector<int> sorted = _integers;
 	std::sort(sorted.begin(), sorted.begin() + _size);
-	// std::cout << "\n--------------\n";
-	// for (std::vector<int>::const_iterator it = _integers.begin(); it < _integers.end(); it++)
-	// 	std::cout << *it << " ";
-	// std::cout << "\n--------------\n";
-
-	// for (std::vector<int>::const_iterator it = sorted.begin(); it < sorted.begin() + _size; it++)
-	// 	std::cout << *it << " ";
-	// std::cout << "\n";
 
 	int shortest = INT_MAX;
 	for (std::vector<int>::const_iterator it = sorted.begin(); it < sorted.begin() + (_size - 1); it++)
@@ -60,7 +52,7 @@ int Span::shortestSpan(void)
 }
 
 // 가장 큰 수와 작은 수의 차를 구함
-int Span::longestSpan(void)
+int Span::longestSpan(void) const
 {
 	if (_size < 2)
 		throw(ThereIsNoSpanException());
@@ -68,6 +60,14 @@ int Span::longestSpan(void)
 	std::vector<int>::const_iterator max_it = std::max_element(_integers.begin(), _integers.end()); 
 	std::vector<int>::const_iterator min_it = std::min_element(_integers.begin(), _integers.end()); 
 	return (*max_it - *min_it);
+}
+
+void Span::showStoredIntegers(void) const
+{
+	std::cout << "show stored integers ...\n";
+	for (size_t i = 0; i < _size; i++)
+		std::cout << _integers[i] << ' ';
+	std::cout << '\n';
 }
 
 const char *Span::AlreadyFullException::what(void) const throw()

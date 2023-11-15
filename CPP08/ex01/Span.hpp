@@ -20,9 +20,22 @@ public:
 	~Span();
 
 	void addNumber(int n);
-	int shortestSpan(void); // 인접한 수들끼리의 차를 차례대로 계산해보고 가장 작은 값 
-	int longestSpan(void); // 가장 큰 수와 작은 수의 차를 구하고 절댓값
-
+	
+	template <typename T>
+	void addRange(T first, T last) // add [first, last) to _integers
+	{
+		// 정석은 typename T::iterator를 이용하는 것이지만
+		// std::begin, end도 지원하기 위해 다른 형식으로 작성
+		while (first != last)
+		{
+			addNumber(*first);
+			first++;
+		}
+	}
+	
+	int shortestSpan(void) const; // 인접한 수들끼리의 차를 차례대로 계산해보고 가장 작은 값 
+	int longestSpan(void) const; // 가장 큰 수와 작은 수의 차를 구하고 절댓값
+	void showStoredIntegers(void) const;
 	class AlreadyFullException : public std::exception
 	{
 		const char *what(void) const throw();
