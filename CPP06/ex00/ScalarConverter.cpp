@@ -1,7 +1,6 @@
 #include "ScalarConverter.hpp"
 #include <cctype>
 #include <cmath>
-#include <errno.h>
 #include <iomanip>
 #include <iostream>
 #include <limits>
@@ -49,12 +48,6 @@ void ScalarConverter::checkIfTypeInt(void)
     char *endptr;
 
     long double value = strtold(literal_c, &endptr);
-
-    if (errno == ERANGE)
-    {
-        printf("range error, got ");
-        errno = 0;
-    }
 
     if (*endptr == '\0')
     {
@@ -184,10 +177,8 @@ void ScalarConverter::detectType(void)
     checkIfTypeInt();
     checkIfTypeFloat();
     checkIfTypeDouble();
-    std::cout << "type: " << _type << std::endl;
-    std::cout << "actual: " << std::fixed << _actual << std::endl;
     if (_type == SCALAR_NONE)
-        throw(DoesNotBelongException());
+        throw(DoesNotBelongAnyTypesException());
 }
 
 void ScalarConverter::printToChar(void)
@@ -218,12 +209,13 @@ void ScalarConverter::printToFloat(void)
     std::cout << "float: ";
     if (std::isnan(_actual) || std::isinf(_actual))
         std::cout << actualToFloat() << 'f' << std::endl;
-    else if (-std::numeric_limits<float>::min() <= _actual && _actual <= std::numeric_limits<float>::max())
+    else if (-std::numeric_limits<float>::max() <= _actual && _actual <= std::numeric_limits<float>::max())
     {
         if (_actual == truncl(_actual))
-            std::cout << std::setprecision(0) << actualToFloat() << ".0f" << std::endl;
+            std::cout << std::fixed << std::setprecision(0) << actualToFloat() << ".0f" << std::endl;
+			// 출력 형식 xx.0f 꼴로 맞춰주기 위함 (구색 갖추기...)
         else
-            std::cout << std::setprecision(std::numeric_limits<float>::digits10) << actualToFloat() << 'f' << std::endl;
+            std::cout << std::fixed << std::setprecision(std::numeric_limits<float>::digits10) << actualToFloat() << 'f' << std::endl;
     }
     else
         std::cout << "impossible" << std::endl;
@@ -237,9 +229,10 @@ void ScalarConverter::printToDouble(void)
     else if (-std::numeric_limits<double>::max() <= _actual && _actual <= std::numeric_limits<double>::max())
     {
         if (_actual == truncl(_actual))
-            std::cout << actualToDouble() << ".0" << std::endl;
+            std::cout << std::fixed << std::setprecision(0) << actualToDouble() << ".0" << std::endl;
+			// 출력 형식 xx.0 꼴로 맞춰주기 위함 (구색 갖추기...)
         else
-            std::cout << std::setprecision(std::numeric_limits<double>::digits10) << actualToDouble() << std::endl;
+            std::cout << std::fixed << std::setprecision(std::numeric_limits<double>::digits10) << actualToDouble() << std::endl;
     }
     else
         std::cout << "impossible" << std::endl;
@@ -260,17 +253,34 @@ void ScalarConverter::convert(std::string &literal)
     catch (const std::exception &e)
     {
         std::cerr << "\033[1;31m" << e.what() << "\033[0m" << '\n';
-        return;
+        if (typeid(e) == typeid(DoesNotBelongAnyTypesException))
+            return;
     }
+    // printDetectedResult();
     printToChar();
     printToInt();
     printToFloat();
     printToDouble();
 }
 
-const char *ScalarConverter::DoesNotBelongException::what(void) const throw()
+void ScalarConverter::printDetectedResult(void)
 {
-    return ("This literal does not belong to scalar types");
+    std::cout << std::fixed << std::setprecision(6);
+	// std::cout << std::scientific;
+    std::cout << "type: " << _type << std::endl;
+    std::cout << "actual: " << _actual << std::endl;
+    std::cout << "--------------------------------" << std::endl;
+    std::cout.unsetf(std::ios_base::floatfield);
+}
+
+const char *ScalarConverter::DoesNotBelongAnyTypesException::what(void) const throw()
+{
+    return ("This literal does not belong to any scalar types");
+}
+
+const char *ScalarConverter::TooLargeValueToDisplayException::what(void) const throw()
+{
+    return ("The value represented by this literal is too large, impossible to display any primitive type");
 }
 
 ScalarConverter::ScalarConverter()

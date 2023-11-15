@@ -34,6 +34,7 @@ class ScalarConverter
     static long double _actual; // converted from string to actual type value
 
     static void detectType(void);
+    static void printDetectedResult(void);
 
     static void checkIfTypeChar(void);
     static void checkIfTypeInt(void);
@@ -53,10 +54,16 @@ class ScalarConverter
   public:
     static void convert(std::string &literal);
 
-    class DoesNotBelongException : public std::exception
+    class DoesNotBelongAnyTypesException : public std::exception
     {
         const char *what(void) const throw();
     };
+
+    class TooLargeValueToDisplayException : public std::exception
+    {
+        const char *what(void) const throw();
+    };
+  
 };
 
 #endif
