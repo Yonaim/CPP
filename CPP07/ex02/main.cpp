@@ -3,7 +3,7 @@
 
 void print_arr(const Array<int> &arr, std::string name)
 {
-	for (int i = 0; i < arr.size(); i++)
+	for (size_t i = 0; i < arr.size(); i++)
 		std::cout << name << "["<< i << "]: " << arr[i] << std::endl;
 }
 
@@ -13,7 +13,7 @@ int main()
 	Array<int> arr(5);
 	print_arr(arr, "arr");
 	std::cout << '\n';
-	for (int i = 0; i < arr.size(); i++)
+	for (size_t i = 0; i < arr.size(); i++)
 		arr[i] = i + 1;
 	print_arr(arr, "arr");
 

@@ -13,7 +13,7 @@ void iter(T *arr, size_t arr_len, void (*f)(T &))
 }
 
 template <typename T>
-void iter(const T *arr, size_t arr_len, void (*f)(T &))
+void iter(const T *arr, size_t arr_len, void (*f)(const T &))
 {
 	for (size_t i = 0; i < arr_len; i++)
 	{
