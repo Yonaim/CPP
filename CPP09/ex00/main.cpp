@@ -5,24 +5,26 @@
 // TODO: 윤년
 int main(int argc, char *argv[])
 {
-	if (argc != 2)
-	{
-		std::cout << "usage: ./btc <input_file>" << std::endl;
-		return (1);
-	}
+    if (argc != 2)
+    {
+        std::cout << "usage: ./btc <input_file>" << std::endl;
+        return (1);
+    }
 
-	try
-	{
-		std::string input(argv[1]);
-		BitcoinExchange::parseCSVfile();
-		BitcoinExchange::evaluateValues(input);
-	}
-	catch (std::exception &e)
-	{
-		std::cerr << e.what() << std::endl;
-		return (1);
-	}
+    try
+    {
+        std::string target(argv[1]);
+        BitcoinExchange::openMarketPriceFile();
+        BitcoinExchange::openTargetFile(target);
+        BitcoinExchange::parseMarketPrice();
+        BitcoinExchange::evaluateTarget();
+    }
+    catch (std::exception &e)
+    {
+        std::cerr << "\033[1;31m" << e.what() << "\033[0m" << std::endl;
+        return (1);
+    }
 
-	BitcoinExchange::displayEvaluatedValues();
-	return (0);
+    // BitcoinExchange::displayEvaluated();
+    return (0);
 }
