@@ -28,10 +28,8 @@ void BitcoinExchange::parseMarketPriceFile(void)
     std::string line;
 
     std::getline(_file_market_price, line);
-    // std::cout << line << std::endl;
     while (std::getline(_file_market_price, line))
     {
-        // std::cout << line << std::endl;
         if (!isValidFormatMarketPriceLine(line))
             throw(InvalidMarketPriceFileException(line));
         size_t delim_pos = line.find(',');
@@ -51,6 +49,11 @@ void BitcoinExchange::evaluateByLine(const std::string &line)
         size_t delim_pos = line.find('|');
         std::string date = line.substr(0, delim_pos - 1);
         float value = atof(line.substr(delim_pos + 2).c_str());
+        if (value <= 0)
+            throw(NotPositiveNumberException());
+        else if (value >= 1000)
+            throw(TooLargeNumberException());
+
         float result = value * getProperMarketPrice(date);
         std::cout << date << " => " << value << " = " << result << '\n';
     }
@@ -121,7 +124,7 @@ bool BitcoinExchange::isValidFormatTargetLine(const std::string &line)
 
     if (!isIso8601DateStr(date) || !isValidDate(date))
         return (false);
-    if (!isFloatStr(value_str) || value_f < 0 || value_f > 1000)
+    if (!isFloatStr(value_str))
         return (false);
     return (true);
 }

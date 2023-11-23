@@ -48,6 +48,8 @@ class BitcoinExchange
     class CouldNotOpenFileException;
     class InvalidMarketPriceFileException;
     class BadInputException;
+    class NotPositiveNumberException;
+    class TooLargeNumberException;
 };
 
 class BitcoinExchange::CouldNotOpenFileException : public std::exception
@@ -97,6 +99,22 @@ class BitcoinExchange::BadInputException : public std::exception
     const char *what(void) const throw()
     {
         return errormsg.c_str();
+    }
+};
+
+class BitcoinExchange::NotPositiveNumberException : public std::exception
+{
+    const char *what(void) const throw()
+    {
+        return ("not a positive number.");
+    }
+};
+
+class BitcoinExchange::TooLargeNumberException : public std::exception
+{
+    const char *what(void) const throw()
+    {
+        return ("too large a number.");
     }
 };
 
