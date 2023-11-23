@@ -23,14 +23,11 @@ class BitcoinExchange
     // format check
     static bool isValidFormatMarketPriceLine(const std::string &line);
     static bool isValidFormatTargetLine(const std::string &line);
-
-    // format check utils
-    static bool isValidDateStr(const std::string &str);
-    static bool isFloatStr(const std::string &str);
+    static bool isIso8601DateStr(const std::string &str);
     static bool isValidDate(const std::string &date);
-    static bool isValidValue(const std::string &value);
+    static bool isFloatStr(const std::string &str);
 	
-	// evaluate utils
+	  // evaluate utils
     static void evaluateByLine(const std::string &line);
     static float getProperMarketPrice(const std::string &date);
 

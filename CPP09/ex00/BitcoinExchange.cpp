@@ -90,7 +90,9 @@ bool BitcoinExchange::isValidFormatMarketPriceLine(const std::string &line)
     std::string date = line.substr(0, delim_pos);
     std::string exchange_rate = line.substr(delim_pos + 1);
 
-    if (!isValidDateStr(date) || !isFloatStr(exchange_rate))
+    if (!isIso8601DateStr(date) || !isValidDate(date))
+        return (false);
+    if (!isFloatStr(exchange_rate))
         return (false);
     return (true);
 }
@@ -110,17 +112,17 @@ bool BitcoinExchange::isValidFormatTargetLine(const std::string &line)
         return (false);
 
     std::string date = line.substr(0, delim_pos - 1);
-    std::string value = line.substr(delim_pos + 2);
+    std::string value_str = line.substr(delim_pos + 2);
+    float value_f = atof(value_str.c_str());
 
-    if (!isValidDateStr(date))
+    if (!isIso8601DateStr(date) || !isValidDate(date))
         return (false);
-
-    if (!isFloatStr(value))
+    if (!isFloatStr(value_str) || value_f < 0 || value_f > 1000)
         return (false);
     return (true);
 }
 
-bool BitcoinExchange::isValidDateStr(const std::string &str)
+bool BitcoinExchange::isIso8601DateStr(const std::string &str)
 {
     if (str.length() != 10)
         return (false);
@@ -198,14 +200,6 @@ bool BitcoinExchange::isValidDate(const std::string &date)
         return (1 <= day && day <= 30);
     else
         return (1 <= day && day <= 31);
-}
-
-// value: float or a positive integer, between 0 and 1000 (0 < n < 1000)
-// 값 검증
-bool BitcoinExchange::isValidValue(const std::string &value)
-{
-    // TODO: 구현
-    return (true);
 }
 
 float BitcoinExchange::getProperMarketPrice(const std::string &date)
