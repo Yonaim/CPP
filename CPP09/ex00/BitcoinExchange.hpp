@@ -26,8 +26,8 @@ class BitcoinExchange
     static bool isIso8601DateStr(const std::string &str);
     static bool isValidDate(const std::string &date);
     static bool isFloatStr(const std::string &str);
-	
-	  // evaluate utils
+
+    // evaluate utils
     static void evaluateByLine(const std::string &line);
     static float getProperMarketPrice(const std::string &date);
 
@@ -68,9 +68,18 @@ class BitcoinExchange::CouldNotOpenFileException : public std::exception
 };
 class BitcoinExchange::InvalidMarketPriceFileException : public std::exception
 {
+  private:
+    std::string errormsg;
+
+  public:
+    InvalidMarketPriceFileException(const std::string &line)
+    {
+        errormsg = "Invalid market price file: bad line => " + line;
+    }
+    virtual ~InvalidMarketPriceFileException() throw(){};
     const char *what(void) const throw()
     {
-        return ("Invalid Market price file");
+        return errormsg.c_str();
     }
 };
 

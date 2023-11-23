@@ -22,14 +22,18 @@ void BitcoinExchange::openTargetFile(const std::string &path)
         throw(CouldNotOpenFileException(path));
 }
 
+// parse 2-field CSV file
 void BitcoinExchange::parseMarketPriceFile(void)
 {
     std::string line;
 
+    std::getline(_file_market_price, line);
+    // std::cout << line << std::endl;
     while (std::getline(_file_market_price, line))
     {
+        // std::cout << line << std::endl;
         if (!isValidFormatMarketPriceLine(line))
-            throw(InvalidMarketPriceFileException());
+            throw(InvalidMarketPriceFileException(line));
         size_t delim_pos = line.find(',');
         std::string date = line.substr(0, delim_pos);
         std::string price = line.substr(delim_pos + 1);
@@ -135,14 +139,14 @@ bool BitcoinExchange::isIso8601DateStr(const std::string &str)
         return (false);
     for (int i = 0; i < 2; i++)
     {
-        if (!isdigit(str[i]))
+        if (!isdigit(str[5 + i]))
             return (false);
     }
     if (str[7] != '-')
         return (false);
     for (int i = 0; i < 2; i++)
     {
-        if (!isdigit(str[i]))
+        if (!isdigit(str[8 + i]))
             return (false);
     }
     return (true);
@@ -151,11 +155,14 @@ bool BitcoinExchange::isIso8601DateStr(const std::string &str)
 bool BitcoinExchange::isFloatStr(const std::string &str)
 {
     bool point_exist = false;
+    bool digit_exist = false;
+    int i = 0;
 
-    if (!isdigit(str[0]))
+    if (str[0] == '-')
+        i++;
+    else if (!isdigit(str[0]) )
         return (false);
 
-    int i = 0;
     while (str[i])
     {
         if (str[i] == '.')
@@ -167,9 +174,10 @@ bool BitcoinExchange::isFloatStr(const std::string &str)
         }
         else if (!isdigit(str[i]))
             return (false);
+        digit_exist = true;
         i++;
     }
-    return (true);
+    return (digit_exist);
 }
 
 // date: Year-Month-Day (월: 1~12, 일: 1~30 or 31 or 28) (윤년 확인할 것)
@@ -178,11 +186,12 @@ bool BitcoinExchange::isFloatStr(const std::string &str)
 bool BitcoinExchange::isValidDate(const std::string &date)
 {
     // check leap year
-    size_t delim_pos1 = date.find(',');
-    size_t delim_pos2 = date.find(',', delim_pos1);
+    size_t delim_pos1 = date.find('-');
+    size_t delim_pos2 = date.find('-', delim_pos1 + 1);
+
     int year = atoi(date.substr(0, delim_pos1).c_str());
-    int month = atoi(date.substr(delim_pos1, delim_pos2).c_str());
-    int day = atoi(date.substr(delim_pos2).c_str());
+    int month = atoi(date.substr(delim_pos1 + 1, 2).c_str());
+    int day = atoi(date.substr(delim_pos2 + 1, 2).c_str());
 
     // check month
     if (!(1 <= month && month <= 12))
@@ -200,6 +209,7 @@ bool BitcoinExchange::isValidDate(const std::string &date)
         return (1 <= day && day <= 30);
     else
         return (1 <= day && day <= 31);
+    return (true);
 }
 
 float BitcoinExchange::getProperMarketPrice(const std::string &date)
