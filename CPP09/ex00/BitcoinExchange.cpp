@@ -4,35 +4,32 @@
 #include <iostream>
 #include <sstream>
 
+std::ifstream BitcoinExchange::_file_market_price;
+std::ifstream BitcoinExchange::_file_target;
+std::map<std::string, float> BitcoinExchange::_market_price; // <date, price per 1 coin (exchange_rate)>
+
 void BitcoinExchange::openMarketPriceFile(const std::string &path)
 {
     _file_market_price.open(path);
     if (!_file_market_price.good())
-        throw(OpenFileFailedException(path));
+        throw(CouldNotOpenFileException(path));
 }
 
 void BitcoinExchange::openTargetFile(const std::string &path)
 {
     _file_target.open(path);
     if (!_file_target.good())
-        throw(OpenFileFailedException(path));
+        throw(CouldNotOpenFileException(path));
 }
 
-void BitcoinExchange::parseMarketPrice(void)
+void BitcoinExchange::parseMarketPriceFile(void)
 {
     std::string line;
 
-    std::getline(_file_market_price, line);
-    if (line != "date,exchange_rate")
-        throw(InvalidFileFormatException("MarketPrice", 1));
-
-    int nth = 0;
     while (std::getline(_file_market_price, line))
     {
-        nth++;
-        if (!isValidMarketPriceLineFormat(line))
-            throw(InvalidFileFormatException("MarketPrice", nth));
-
+        if (!isValidFormatMarketPriceLine(line))
+            throw(InvalidMarketPriceFileException());
         size_t delim_pos = line.find(',');
         std::string date = line.substr(0, delim_pos);
         std::string price = line.substr(delim_pos + 1);
@@ -41,21 +38,50 @@ void BitcoinExchange::parseMarketPrice(void)
     }
 }
 
-void BitcoinExchange::evaluateTarget(void)
+void BitcoinExchange::evaluateByLine(const std::string &line)
 {
+    try
+    {
+        if (!isValidFormatTargetLine(line))
+            throw(BadInputException(line));
+        size_t delim_pos = line.find('|');
+        std::string date = line.substr(0, delim_pos - 1);
+        float value = atof(line.substr(delim_pos + 2).c_str());
+        float result = value * getProperMarketPrice(date);
+        std::cout << date << " => " << value << " = " << result << '\n';
+    }
+    catch (const std::exception &e)
+    {
+        std::cout << "Error: " << e.what() << '\n';
+    }
 }
 
-void BitcoinExchange::displayEvaluated(void)
+void BitcoinExchange::evaluateAndDisplay(void)
 {
+    std::string line;
+
+    try
+    {
+        std::getline(_file_target, line);
+        if (line != "date | value")
+            throw(BadInputException(line));
+    }
+    catch (const std::exception &e)
+    {
+        std::cout << "Error: " << e.what() << '\n';
+        return;
+    }
+
+    while (std::getline(_file_target, line))
+        evaluateByLine(line);
 }
 
 /*
 2010-08-20,0.07
 2010-08-20,,,,0.07 <- 오류로 판별
 */
-// 문자열 형식 검증
 // exchange_rate 제한은 딱히 없음
-bool BitcoinExchange::isValidMarketPriceLineFormat(const std::string &line)
+bool BitcoinExchange::isValidFormatMarketPriceLine(const std::string &line)
 {
     size_t delim_pos = line.find(',');
     if (delim_pos == std::string::npos)
@@ -75,8 +101,7 @@ date: Year-Month-Day (월: 1~12, 일: 1~30 or 31 or 28) (윤년 확인할 것)
 value: float or a positive integer, between 0 and 1000 (0 < n < 1000)
 ex) 2011-01-03 | 3
 */
-// 문자열 형식 검증
-bool BitcoinExchange::isValidTargetLineFormat(const std::string &line)
+bool BitcoinExchange::isValidFormatTargetLine(const std::string &line)
 {
     size_t delim_pos = line.find('|');
     if (delim_pos == std::string::npos)
@@ -87,7 +112,10 @@ bool BitcoinExchange::isValidTargetLineFormat(const std::string &line)
     std::string date = line.substr(0, delim_pos - 1);
     std::string value = line.substr(delim_pos + 2);
 
-    if (!isValidDateStr(date) || !isFloatStr(value))
+    if (!isValidDateStr(date))
+        return (false);
+
+    if (!isFloatStr(value))
         return (false);
     return (true);
 }
@@ -176,5 +204,12 @@ bool BitcoinExchange::isValidDate(const std::string &date)
 // 값 검증
 bool BitcoinExchange::isValidValue(const std::string &value)
 {
+    // TODO: 구현
     return (true);
+}
+
+float BitcoinExchange::getProperMarketPrice(const std::string &date)
+{
+    // TODO: 구현
+    return (0);
 }

@@ -13,8 +13,7 @@ class BitcoinExchange
   private:
     static std::ifstream _file_market_price;
     static std::ifstream _file_target;
-    static std::map<std::string, int> _market_price; // <date, price per 1 coin (exchange_rate)>
-    // static std::map<std::string, int> _evaluated;    // <date, evaluated value>
+    static std::map<std::string, float> _market_price; // <date, price per 1 coin (exchange_rate)>
 
     // for OCF (not use)
     BitcoinExchange();
@@ -22,64 +21,77 @@ class BitcoinExchange
     BitcoinExchange &operator=(const BitcoinExchange &orig);
 
     // format check
-    static bool isValidMarketPriceLineFormat(const std::string &line);
-    static bool isValidTargetLineFormat(const std::string &line);
-    static bool isValidDateStr(const std::string &date);
-    static bool isFloatStr(const std::string &date);
-    // 
+    static bool isValidFormatMarketPriceLine(const std::string &line);
+    static bool isValidFormatTargetLine(const std::string &line);
+
+    // format check utils
+    static bool isValidDateStr(const std::string &str);
+    static bool isFloatStr(const std::string &str);
     static bool isValidDate(const std::string &date);
     static bool isValidValue(const std::string &value);
+	
+	// evaluate utils
+    static void evaluateByLine(const std::string &line);
+    static float getProperMarketPrice(const std::string &date);
 
   public:
-    ~BitcoinExchange();
+    ~BitcoinExchange(){};
 
+    // open
     static void openMarketPriceFile(const std::string &path = "./data.csv");
     static void openTargetFile(const std::string &path);
-    static void parseMarketPrice(void);
-    static void evaluateTarget(void);
-    // static void displayEvaluated(void);
 
-    class OpenFileFailedException : public std::exception
+    // parse
+    static void parseMarketPriceFile(void);
+
+    // evaluate & display
+    static void evaluateAndDisplay(void);
+
+    // exception
+    class CouldNotOpenFileException;
+    class InvalidMarketPriceFileException;
+    class BadInputException;
+};
+
+class BitcoinExchange::CouldNotOpenFileException : public std::exception
+{
+  private:
+    std::string errormsg;
+
+  public:
+    CouldNotOpenFileException(const std::string &filename)
     {
-      private:
-        std::string _filename;
-
-      public:
-        OpenFileFailedException(const std::string &filename) : _filename(filename)
-        {
-        }
-        virtual ~OpenFileFailedException() throw();
-        const char *what(void) const throw()
-        {
-            return (("Open file '" + _filename + "' failed").c_str());
-        }
-    };
-
-    class InvalidFileFormatException : public std::exception
+        errormsg = "Open file '" + filename + "' failed";
+    }
+    virtual ~CouldNotOpenFileException() throw(){};
+    const char *what(void) const throw()
     {
-      private:
-        std::string _filename;
-        int _nth_line;
-
-      public:
-        InvalidFileFormatException(const std::string &filename, int nth_line) : _filename(filename), _nth_line(nth_line)
-        {
-        }
-        virtual ~InvalidFileFormatException() throw();
-        const char *what(void) const throw()
-        {
-            std::stringstream ss;
-            ss << _nth_line;
-            std::string nth_line_str = ss.str();
-            return (("Invalid file format '" + _filename + "' : line " + nth_line_str).c_str());
-        }
-    };
-
-    class TooLargeNumberException : public std::exception
+        return (errormsg.c_str());
+    }
+};
+class BitcoinExchange::InvalidMarketPriceFileException : public std::exception
+{
+    const char *what(void) const throw()
     {
-      const char* what(void) const throw();
-    };
+        return ("Invalid Market price file");
+    }
+};
 
+class BitcoinExchange::BadInputException : public std::exception
+{
+  private:
+    std::string errormsg;
+
+  public:
+    BadInputException(const std::string &input)
+    {
+        errormsg = "bad input => " + input;
+    }
+    virtual ~BadInputException() throw(){};
+    const char *what(void) const throw()
+    {
+        return errormsg.c_str();
+    }
 };
 
 #endif

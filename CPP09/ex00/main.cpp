@@ -16,8 +16,8 @@ int main(int argc, char *argv[])
         std::string target(argv[1]);
         BitcoinExchange::openMarketPriceFile();
         BitcoinExchange::openTargetFile(target);
-        BitcoinExchange::parseMarketPrice();
-        BitcoinExchange::evaluateTarget();
+        BitcoinExchange::parseMarketPriceFile();
+        BitcoinExchange::evaluateAndDisplay();
     }
     catch (std::exception &e)
     {
