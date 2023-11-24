@@ -4,9 +4,11 @@
 #include <iostream>
 #include <sstream>
 
-std::ifstream BitcoinExchange::_file_market_price;
-std::ifstream BitcoinExchange::_file_target;
-std::map<std::string, float> BitcoinExchange::_market_price; // <date, price per 1 coin (exchange_rate)>
+BitcoinExchange::BitcoinExchange(const std::string &target_path, const std::string &csv_path)
+{
+    openMarketPriceFile(csv_path);
+    openTargetFile(target_path);
+}
 
 void BitcoinExchange::openMarketPriceFile(const std::string &path)
 {
@@ -28,10 +30,14 @@ void BitcoinExchange::parseMarketPriceFile(void)
     std::string line;
 
     std::getline(_file_market_price, line);
-    while (std::getline(_file_market_price, line))
+	if (line != "date,exchange_rate")
+		throw(InvalidMarketPriceFileException(1));
+	int nth = 1;
+	while (std::getline(_file_market_price, line))
     {
+		nth++;
         if (!isValidFormatMarketPriceLine(line))
-            throw(InvalidMarketPriceFileException(line));
+            throw(InvalidMarketPriceFileException(nth));
         size_t delim_pos = line.find(',');
         std::string date = line.substr(0, delim_pos);
         std::string price = line.substr(delim_pos + 1);
@@ -54,12 +60,13 @@ void BitcoinExchange::evaluateByLine(const std::string &line)
         else if (value >= 1000)
             throw(TooLargeNumberException());
 
-        float result = value * getProperMarketPrice(date);
+        float result = value * getMarketPrice(date);
         std::cout << date << " => " << value << " = " << result << '\n';
     }
     catch (const std::exception &e)
     {
-        std::cout << "Error: " << e.what() << '\n';
+        std::cout << "\033[0;33m"
+                  << "Error: " << e.what() << "\033[0m" << '\n';
     }
 }
 
@@ -75,7 +82,8 @@ void BitcoinExchange::evaluateAndDisplay(void)
     }
     catch (const std::exception &e)
     {
-        std::cout << "Error: " << e.what() << '\n';
+        std::cout << "\033[1;31m"
+                  << "Error: " << e.what() << "\033[0m" << '\n';
         return;
     }
 
@@ -161,9 +169,9 @@ bool BitcoinExchange::isFloatStr(const std::string &str)
     bool digit_exist = false;
     int i = 0;
 
-    if (str[0] == '-')
+    if (str[0] == '-' || str[0] == '.')
         i++;
-    else if (!isdigit(str[0]) )
+    else if (!isdigit(str[0]))
         return (false);
 
     while (str[i])
@@ -215,8 +223,15 @@ bool BitcoinExchange::isValidDate(const std::string &date)
     return (true);
 }
 
-float BitcoinExchange::getProperMarketPrice(const std::string &date)
+float BitcoinExchange::getMarketPrice(const std::string &date)
 {
-    // TODO: 구현
-    return (0);
+    std::map<std::string, float>::iterator it = _market_price.find(date);
+
+    if (it == _market_price.end())
+    {
+        it = _market_price.lower_bound(date);
+        if (it == _market_price.begin())
+            throw(TooLowerDateException());
+    }
+    return ((*it).second);
 }

@@ -2,47 +2,48 @@
 #define BITCOINEXCHANGE_HPP
 
 #include <exception>
+#include <fstream>
 #include <iostream>
 #include <map>
 #include <sstream>
 #include <string>
 
-// TODO: 전체적으로 public static 함수로 선언해 사용할 것인지, 객체를 만들어 함수를 호출할 것인지 결정하기
 class BitcoinExchange
 {
   private:
-    static std::ifstream _file_market_price;
-    static std::ifstream _file_target;
-    static std::map<std::string, float> _market_price; // <date, price per 1 coin (exchange_rate)>
+    std::ifstream _file_market_price;
+    std::ifstream _file_target;
+    std::map<std::string, float> _market_price; // <date, price per 1 coin (exchange_rate)>
 
     // for OCF (not use)
-    BitcoinExchange();
     BitcoinExchange(const BitcoinExchange &orig);
     BitcoinExchange &operator=(const BitcoinExchange &orig);
 
     // format check
-    static bool isValidFormatMarketPriceLine(const std::string &line);
-    static bool isValidFormatTargetLine(const std::string &line);
-    static bool isIso8601DateStr(const std::string &str);
-    static bool isValidDate(const std::string &date);
-    static bool isFloatStr(const std::string &str);
+    bool isValidFormatMarketPriceLine(const std::string &line);
+    bool isValidFormatTargetLine(const std::string &line);
+    bool isIso8601DateStr(const std::string &str);
+    bool isValidDate(const std::string &date);
+    bool isFloatStr(const std::string &str);
 
     // evaluate utils
-    static void evaluateByLine(const std::string &line);
-    static float getProperMarketPrice(const std::string &date);
+    void evaluateByLine(const std::string &line);
+    float getMarketPrice(const std::string &date);
 
   public:
+    BitcoinExchange(){};
+    BitcoinExchange(const std::string &target_path, const std::string &csv_path = "data.csv");
     ~BitcoinExchange(){};
 
     // open
-    static void openMarketPriceFile(const std::string &path = "./data.csv");
-    static void openTargetFile(const std::string &path);
+    void openMarketPriceFile(const std::string &path = "./data.csv");
+    void openTargetFile(const std::string &path);
 
     // parse
-    static void parseMarketPriceFile(void);
+    void parseMarketPriceFile(void);
 
     // evaluate & display
-    static void evaluateAndDisplay(void);
+    void evaluateAndDisplay(void);
 
     // exception
     class CouldNotOpenFileException;
@@ -50,6 +51,7 @@ class BitcoinExchange
     class BadInputException;
     class NotPositiveNumberException;
     class TooLargeNumberException;
+    class TooLowerDateException;
 };
 
 class BitcoinExchange::CouldNotOpenFileException : public std::exception
@@ -74,9 +76,11 @@ class BitcoinExchange::InvalidMarketPriceFileException : public std::exception
     std::string errormsg;
 
   public:
-    InvalidMarketPriceFileException(const std::string &line)
+    InvalidMarketPriceFileException(int nth)
     {
-        errormsg = "Invalid market price file: bad line => " + line;
+		std::stringstream ss;
+		ss << nth;
+        errormsg = "invalid market price file: line " + ss.str();
     }
     virtual ~InvalidMarketPriceFileException() throw(){};
     const char *what(void) const throw()
@@ -115,6 +119,14 @@ class BitcoinExchange::TooLargeNumberException : public std::exception
     const char *what(void) const throw()
     {
         return ("too large a number.");
+    }
+};
+
+class BitcoinExchange::TooLowerDateException : public std::exception
+{
+    const char *what(void) const throw()
+    {
+        return ("too lower date.");
     }
 };
 

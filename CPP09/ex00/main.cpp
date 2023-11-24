@@ -2,7 +2,6 @@
 
 #include <iostream>
 
-// TODO: 윤년
 int main(int argc, char *argv[])
 {
     if (argc != 2)
@@ -13,18 +12,17 @@ int main(int argc, char *argv[])
 
     try
     {
-        std::string target(argv[1]);
-        BitcoinExchange::openMarketPriceFile();
-        BitcoinExchange::openTargetFile(target);
-        BitcoinExchange::parseMarketPriceFile();
-        BitcoinExchange::evaluateAndDisplay();
+        BitcoinExchange bitcoin_exchange;
+        bitcoin_exchange.openMarketPriceFile();
+        bitcoin_exchange.openTargetFile(argv[1]);
+        bitcoin_exchange.parseMarketPriceFile();
+        bitcoin_exchange.evaluateAndDisplay();
     }
     catch (std::exception &e)
     {
-        std::cerr << "\033[1;31m" << e.what() << "\033[0m" << std::endl;
+        std::cout << "\033[0;31m"
+                  << "Error: " << e.what() << "\033[0m" << std::endl;
         return (1);
     }
-
-    // BitcoinExchange::displayEvaluated();
     return (0);
 }
