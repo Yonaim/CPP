@@ -16,6 +16,7 @@ class BitcoinExchange
     std::map<std::string, float> _market_price; // <date, price per 1 coin (exchange_rate)>
 
     // for OCF (not use)
+    BitcoinExchange();
     BitcoinExchange(const BitcoinExchange &orig);
     BitcoinExchange &operator=(const BitcoinExchange &orig);
 
@@ -31,9 +32,8 @@ class BitcoinExchange
     float getMarketPrice(const std::string &date);
 
   public:
-    BitcoinExchange(){};
     BitcoinExchange(const std::string &target_path, const std::string &csv_path = "data.csv");
-    ~BitcoinExchange(){};
+    ~BitcoinExchange();
 
     // open
     void openMarketPriceFile(const std::string &path = "./data.csv");
@@ -58,76 +58,44 @@ class BitcoinExchange::CouldNotOpenFileException : public std::exception
 {
   private:
     std::string errormsg;
-
   public:
-    CouldNotOpenFileException(const std::string &filename)
-    {
-        errormsg = "Open file '" + filename + "' failed";
-    }
+    CouldNotOpenFileException(const std::string &filename);
     virtual ~CouldNotOpenFileException() throw(){};
-    const char *what(void) const throw()
-    {
-        return (errormsg.c_str());
-    }
+    const char *what(void) const throw();
 };
 class BitcoinExchange::InvalidMarketPriceFileException : public std::exception
 {
   private:
     std::string errormsg;
-
   public:
-    InvalidMarketPriceFileException(int nth)
-    {
-		std::stringstream ss;
-		ss << nth;
-        errormsg = "invalid market price file: line " + ss.str();
-    }
+    InvalidMarketPriceFileException(int nth);
     virtual ~InvalidMarketPriceFileException() throw(){};
-    const char *what(void) const throw()
-    {
-        return errormsg.c_str();
-    }
+    const char *what(void) const throw();
 };
 
 class BitcoinExchange::BadInputException : public std::exception
 {
   private:
     std::string errormsg;
-
   public:
-    BadInputException(const std::string &input)
-    {
-        errormsg = "bad input => " + input;
-    }
+    BadInputException(const std::string &input);
     virtual ~BadInputException() throw(){};
-    const char *what(void) const throw()
-    {
-        return errormsg.c_str();
-    }
+    const char *what(void) const throw();
 };
 
 class BitcoinExchange::NotPositiveNumberException : public std::exception
 {
-    const char *what(void) const throw()
-    {
-        return ("not a positive number.");
-    }
+    const char *what(void) const throw();
 };
 
 class BitcoinExchange::TooLargeNumberException : public std::exception
 {
-    const char *what(void) const throw()
-    {
-        return ("too large a number.");
-    }
+    const char *what(void) const throw();
 };
 
 class BitcoinExchange::TooLowerDateException : public std::exception
 {
-    const char *what(void) const throw()
-    {
-        return ("too lower date.");
-    }
+    const char *what(void) const throw();
 };
 
 #endif

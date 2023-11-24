@@ -4,6 +4,24 @@
 #include <iostream>
 #include <sstream>
 
+// not use
+BitcoinExchange::BitcoinExchange()
+{}
+
+// not use
+BitcoinExchange::BitcoinExchange(const BitcoinExchange &orig)
+{(void)orig;}
+
+// not use
+BitcoinExchange &BitcoinExchange::operator=(const BitcoinExchange &orig)
+{(void)orig; return (*this);}
+
+BitcoinExchange::~BitcoinExchange()
+{
+    _file_market_price.close();
+    _file_target.close();
+}
+
 BitcoinExchange::BitcoinExchange(const std::string &target_path, const std::string &csv_path)
 {
     openMarketPriceFile(csv_path);
@@ -30,12 +48,12 @@ void BitcoinExchange::parseMarketPriceFile(void)
     std::string line;
 
     std::getline(_file_market_price, line);
-	if (line != "date,exchange_rate")
-		throw(InvalidMarketPriceFileException(1));
-	int nth = 1;
-	while (std::getline(_file_market_price, line))
+    if (line != "date,exchange_rate")
+        throw(InvalidMarketPriceFileException(1));
+    int nth = 1;
+    while (std::getline(_file_market_price, line))
     {
-		nth++;
+        nth++;
         if (!isValidFormatMarketPriceLine(line))
             throw(InvalidMarketPriceFileException(nth));
         size_t delim_pos = line.find(',');
@@ -127,12 +145,11 @@ bool BitcoinExchange::isValidFormatTargetLine(const std::string &line)
         return (false);
 
     std::string date = line.substr(0, delim_pos - 1);
-    std::string value_str = line.substr(delim_pos + 2);
-    float value_f = atof(value_str.c_str());
+    std::string value = line.substr(delim_pos + 2);
 
     if (!isIso8601DateStr(date) || !isValidDate(date))
         return (false);
-    if (!isFloatStr(value_str))
+    if (!isFloatStr(value))
         return (false);
     return (true);
 }
@@ -234,4 +251,53 @@ float BitcoinExchange::getMarketPrice(const std::string &date)
             throw(TooLowerDateException());
     }
     return ((*it).second);
+}
+
+/* ----------------------------- EXCEPTIONS --------------------------------- */
+
+BitcoinExchange::CouldNotOpenFileException::CouldNotOpenFileException(const std::string &filename)
+{
+    errormsg = "Open file '" + filename + "' failed";
+}
+
+const char *BitcoinExchange::CouldNotOpenFileException::what(void) const throw()
+{
+    return (errormsg.c_str());
+}
+
+BitcoinExchange::InvalidMarketPriceFileException::InvalidMarketPriceFileException(int nth)
+{
+    std::stringstream ss;
+    ss << nth;
+    errormsg = "invalid market price file: line " + ss.str();
+}
+
+const char *BitcoinExchange::InvalidMarketPriceFileException::what(void) const throw()
+{
+    return errormsg.c_str();
+}
+
+BitcoinExchange::BadInputException::BadInputException(const std::string &input)
+{
+    errormsg = "bad input => " + input;
+}
+
+const char *BitcoinExchange::BadInputException::what(void) const throw()
+{
+    return errormsg.c_str();
+}
+
+const char *BitcoinExchange::NotPositiveNumberException::what(void) const throw()
+{
+    return ("not a positive number.");
+}
+
+const char *BitcoinExchange::TooLargeNumberException::what(void) const throw()
+{
+    return ("too large a number.");
+}
+
+const char *BitcoinExchange::TooLowerDateException::what(void) const throw()
+{
+    return ("too lower date.");
 }

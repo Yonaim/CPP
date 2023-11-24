@@ -12,9 +12,7 @@ int main(int argc, char *argv[])
 
     try
     {
-        BitcoinExchange bitcoin_exchange;
-        bitcoin_exchange.openMarketPriceFile();
-        bitcoin_exchange.openTargetFile(argv[1]);
+        BitcoinExchange bitcoin_exchange(argv[1]);
         bitcoin_exchange.parseMarketPriceFile();
         bitcoin_exchange.evaluateAndDisplay();
     }
