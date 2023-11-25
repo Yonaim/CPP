@@ -63,6 +63,7 @@ class BitcoinExchange::CouldNotOpenFileException : public std::exception
     virtual ~CouldNotOpenFileException() throw(){};
     const char *what(void) const throw();
 };
+
 class BitcoinExchange::InvalidMarketPriceFileException : public std::exception
 {
   private:

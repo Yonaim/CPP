@@ -1,6 +1,7 @@
 #include "RPN.hpp"
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 
 /*
 ex) "8 9 * 9 - 9 - 9 - 4 - 1 +"
@@ -12,30 +13,23 @@ ex) "8 9 * 9 - 9 - 9 - 4 - 1 +"
 */
 RPN::RPN(std::string exp)
 {
+    skipSpaces(exp);
     std::stringstream ss(exp);
     std::string token;
 
     while (ss >> token)
 	{
-        std::cout << "size: " << token.size() << std::endl;
-		if (exp.length() == 1)
-	        break ;
-		exp = exp.substr(token.size() + 1);
+        std::cout << "Expression: \"" << exp << "\"" << std::endl;
+        std::cout << "Token: \'" << token << "\'" << std::endl;
+
+        exp = exp.substr(1);
+        skipSpaces(exp);
+
         ss.clear();
         ss.str(exp);
-        // this->push(token);
-		std::cout << "Remain expression: " << "\"" << ss.str() << "\"" << std::endl;
+        this->push(token);
 		std::cout << "----------------------------------" << std::endl;
     }
-
-    // while (std::getline(ss, buf, ' '))
-    // {
-    //     if (buf == "")
-    //         continue;
-    //     this->push(buf);
-
-	// 	std::cout << "Remain expression: " << ss.str() << '\n' << std::endl;
-    // }
 }
 
 RPN &RPN::operator=(const RPN &orig)
@@ -49,12 +43,19 @@ RPN::~RPN()
 {
 }
 
+void RPN::skipSpaces(std::string &str)
+{
+    size_t start = str.find_first_not_of(" ");
+    if (start != std::string::npos)
+        str = str.substr(start);
+}
+
 void RPN::push(const std::string &str)
 {
     static const std::string operators = "+-/*";
 
     if (str.length() != 1)
-        throw(UnexpectedTokenException());
+        throw(UnexpectedTokenException(str));
     t_token token;
     if (operators.find(str) != std::string::npos)
     {
@@ -67,18 +68,18 @@ void RPN::push(const std::string &str)
         token.value = str[0] - '0';
     }
     else
-        throw(UnexpectedTokenException());
+        throw(UnexpectedTokenException(str));
 
     if (token.type == TOKEN_OPERATOR)
     {
         const int opd_2 = this->pop_number();
         const int opd_1 = this->pop_number();
         int result = operate_basic4(token.value, opd_1, opd_2);
-		std::cout << opd_1 << ' ' << static_cast<char>(token.value) << ' ' << opd_2 << " = " << result << ", ";
+		std::cout << '\n' << opd_1 << ' ' << static_cast<char>(token.value) << ' ' << opd_2 << " = " << result << ", ";
 		token.type = TOKEN_NUMBER;
 		token.value = result;
     }
-	std::cout << "pushed " << token.value << "...\n";
+	std::cout << "pushed " << token.value << "...\n\n";
     _stack.push(token);
 	std::cout << "After push: \n\n";
 	print_stack();
@@ -104,7 +105,7 @@ int RPN::result(void)
         throw(UnclosedExpressionException());
     t_token last = _stack.top();
     if (last.type == TOKEN_OPERATOR)
-        throw(InvalidExpressionException());
+        throw(std::logic_error("does not make sence"));
     return (last.value);
 }
 
@@ -121,10 +122,9 @@ int RPN::operate_basic4(int op, int opd_1, int opd_2)
     case '*':
         return (opd_1 * opd_2);
     default:
-		std::cout << "does not make sence" << std::endl;
         break;
     }
-    throw(std::logic_error("does not make sence call"));
+    throw(std::logic_error("does not make sence"));
 }
 
 void RPN::print_stack(void)
@@ -134,16 +134,22 @@ void RPN::print_stack(void)
     {
         t_token popped = stack.top();
 		stack.pop();
-		std::cout << "\t|  " << popped.value << "  |" << '\n';
+		std::cout << "\t|" << std::setw(5) << std::internal << popped.value \
+        << std::setw(0) << "|" << '\n';
     }
 	std::cout << "\t ----- " << '\n';
 }
 
 /* ----------------------------- EXCEPTIONS --------------------------------- */
 
-const char *RPN::UnexpectedTokenException::what() const throw()
+RPN::UnexpectedTokenException::UnexpectedTokenException(const std::string &token)
 {
-    return ("unexpected token");
+    errormsg = "unexpected token \'" + token + "\'"; 
+}
+
+const char *RPN::UnexpectedTokenException::what(void) const throw()
+{
+    return (errormsg.c_str());
 }
 
 const char *RPN::InvalidExpressionException::what() const throw()

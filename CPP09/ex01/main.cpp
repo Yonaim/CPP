@@ -1,19 +1,12 @@
 #include "RPN.hpp"
 #include <iostream>
 
-/*
-8 9   * 9 - 9 - 9 - 4 - 1 +
 
-(4 + 5) / (2 - 1)
-
-4 5 + 2 1 - /
-
-*/
 int main(int argc, char *argv[])
 {
     if (argc != 2)
     {
-        std::cout << "usage: ./RPN <expression>" << std::endl;
+        std::cout << "Usage: RPN <expression>" << std::endl;
         return (1);
     }
 
@@ -21,7 +14,8 @@ int main(int argc, char *argv[])
     {
         std::string exp(argv[1]);
         RPN rpn(exp);
-        // std::cout << "\033[0;3가2m" << "\n>>> RESULT: " << rpn.result() << '\n' << std::endl;
+        int result = rpn.result();
+        std::cout << "\033[0;32m" << "\n>>> RESULT: " << result << '\n' << std::endl;
     }
     catch (const std::exception &e)
     {

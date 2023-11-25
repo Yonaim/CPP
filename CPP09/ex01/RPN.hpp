@@ -32,6 +32,7 @@ private:
 	void push(const std::string &token);
 	int pop_number(void);
 	int operate_basic4(int op, int opd_1, int opd_2);
+	void skipSpaces(std::string &str);
 	void print_stack(void);
 
 public:
@@ -48,7 +49,12 @@ public:
 
 class RPN::UnexpectedTokenException : public std::exception
 {
-	const char *what(void) const throw();
+  private:
+    std::string errormsg;
+  public:
+    UnexpectedTokenException(const std::string &token);
+    virtual ~UnexpectedTokenException() throw(){};
+    const char *what(void) const throw();
 };
 
 class RPN::InvalidExpressionException : public std::exception
