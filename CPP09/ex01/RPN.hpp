@@ -32,9 +32,10 @@ private:
 	void push(const std::string &token);
 	int pop_number(void);
 	int operate_basic4(int op, int opd_1, int opd_2);
+	void print_stack(void);
 
 public:
-	RPN(const std::string &exp);
+	RPN(std::string exp);
 	~RPN();
 
 	int result(void);
