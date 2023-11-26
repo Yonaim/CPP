@@ -1,7 +1,7 @@
 #include "RPN.hpp"
+#include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <iomanip>
 
 /*
 ex) "8 9 * 9 - 9 - 9 - 4 - 1 +"
@@ -18,7 +18,8 @@ RPN::RPN(std::string exp)
     std::string token;
 
     while (ss >> token)
-	{
+    {
+        std::cout << "----------------------------------" << std::endl;
         std::cout << "Expression: \"" << exp << "\"" << std::endl;
         std::cout << "Token: \'" << token << "\'" << std::endl;
 
@@ -28,7 +29,6 @@ RPN::RPN(std::string exp)
         ss.clear();
         ss.str(exp);
         this->push(token);
-		std::cout << "----------------------------------" << std::endl;
     }
 }
 
@@ -75,34 +75,31 @@ void RPN::push(const std::string &str)
         const int opd_2 = this->pop_number();
         const int opd_1 = this->pop_number();
         int result = operate_basic4(token.value, opd_1, opd_2);
-		std::cout << '\n' << opd_1 << ' ' << static_cast<char>(token.value) << ' ' << opd_2 << " = " << result << ", ";
-		token.type = TOKEN_NUMBER;
-		token.value = result;
+        std::cout << '\n' << opd_1 << ' ' << static_cast<char>(token.value) << ' ' << opd_2 << " = " << result << ", ";
+        token.type = TOKEN_NUMBER;
+        token.value = result;
     }
-	std::cout << "pushed " << token.value << "...\n\n";
+    std::cout << "pushed " << token.value << "...\n\n";
     _stack.push(token);
-	std::cout << "After push: \n\n";
-	print_stack();
+    std::cout << "After push: \n\n";
+    print_stack();
 }
 
 int RPN::pop_number(void)
 {
     if (_stack.empty())
-        throw(InvalidExpressionException());
-
-    // pop되어 나온 것은 무조건 숫자여야함 (오퍼레이터면 x)
-    // 처음에 push할때 숫자 혹은 오퍼레이터 리터럴만 push하게 되어있으므로 오퍼레이터 여부만 체크하면 됨
+        throw(ExtraOperatorException());
     t_token popped = _stack.top();
     _stack.pop();
     if (popped.type != TOKEN_NUMBER)
-        throw(InvalidExpressionException());
+        throw(std::logic_error("does not make sence"));
     return (popped.value);
 }
 
 int RPN::result(void)
 {
     if (_stack.size() != 1)
-        throw(UnclosedExpressionException());
+        throw(ExtraNumberException());
     t_token last = _stack.top();
     if (last.type == TOKEN_OPERATOR)
         throw(std::logic_error("does not make sence"));
@@ -129,22 +126,21 @@ int RPN::operate_basic4(int op, int opd_1, int opd_2)
 
 void RPN::print_stack(void)
 {
-	std::stack<t_token> stack = _stack;
+    std::stack<t_token> stack = _stack;
     while (!stack.empty())
     {
         t_token popped = stack.top();
-		stack.pop();
-		std::cout << "\t|" << std::setw(5) << std::internal << popped.value \
-        << std::setw(0) << "|" << '\n';
+        stack.pop();
+        std::cout << "\t|" << std::setw(5) << std::internal << popped.value << std::setw(0) << "|" << '\n';
     }
-	std::cout << "\t ----- " << '\n';
+    std::cout << "\t ----- " << '\n';
 }
 
 /* ----------------------------- EXCEPTIONS --------------------------------- */
 
 RPN::UnexpectedTokenException::UnexpectedTokenException(const std::string &token)
 {
-    errormsg = "unexpected token \'" + token + "\'"; 
+    errormsg = "unexpected token \'" + token + "\'";
 }
 
 const char *RPN::UnexpectedTokenException::what(void) const throw()
@@ -152,12 +148,12 @@ const char *RPN::UnexpectedTokenException::what(void) const throw()
     return (errormsg.c_str());
 }
 
-const char *RPN::InvalidExpressionException::what() const throw()
+const char *RPN::ExtraOperatorException::what() const throw()
 {
-    return ("invalid expression");
+    return ("extra operator");
 }
 
-const char *RPN::UnclosedExpressionException::what() const throw()
+const char *RPN::ExtraNumberException::what() const throw()
 {
-    return ("unclosed expression");
+    return ("extra number");
 }
