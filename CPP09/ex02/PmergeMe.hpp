@@ -27,6 +27,7 @@ class PmergeMe
 
     // vector
     void sortVector(void);
+    bool isVectorAscendingSorted(void) const;
     void printVector(const std::vector<int> &v);
 
     std::vector<int> vFordJohnson(std::vector<int> src);
@@ -38,7 +39,8 @@ class PmergeMe
 
     // list
     void sortList(void);
-    int getListElem(const std::list<int> &l, int idx);
+    bool isListAscendingSorted(void) const;
+    int getListElem(const std::list<int> &l, int idx) const;
 
     std::list<int> lFordJohnson(std::list<int> src);
     void lDivide(const std::list<int> &src, std::list<int> &larger, std::list<int> &smaller);

@@ -1,7 +1,6 @@
 #include "PmergeMe.hpp"
 #include <iostream>
 
-// TODO: c++11 주석처리해서 제출하기
 PmergeMe::PmergeMe()
 {
 }
@@ -50,10 +49,15 @@ void PmergeMe::sortAndDisplay(void)
     sortVector();
     sortList();
 
-    if (!std::is_sorted(_vec.begin(), _vec.end())) // C++11
+    if (!isVectorAscendingSorted())
         throw(std::logic_error("sorting vector failed"));
-    if (!std::is_sorted(_lst.begin(), _lst.end())) // C++11
+    if (!isListAscendingSorted())
         throw(std::logic_error("sorting list failed"));
+
+    // if (!std::is_sorted(_vec.begin(), _vec.end())) // C++11
+    //     throw(std::logic_error("sorting vector failed"));
+    // if (!std::is_sorted(_lst.begin(), _lst.end())) // C++11
+    //     throw(std::logic_error("sorting list failed"));
 }
 
 /* -------------------------------- COMMON ---------------------------------- */
@@ -101,6 +105,18 @@ void PmergeMe::sortVector(void)
     printVector(_vec);
     end_time = clock();
     printProcessTime("vector");
+}
+
+bool PmergeMe::isVectorAscendingSorted(void) const
+{
+	int prev = INT_MIN;
+    for (std::vector<int>::const_iterator cur = _vec.begin(); cur != _vec.end(); cur++)
+    {
+		if (*cur < prev)
+			return (false);
+		prev = *cur;
+    }
+	return (true);	
 }
 
 void PmergeMe::printVector(const std::vector<int> &v)
@@ -231,7 +247,19 @@ void PmergeMe::sortList(void)
     printProcessTime("list");
 }
 
-int PmergeMe::getListElem(const std::list<int> &l, int idx)
+bool PmergeMe::isListAscendingSorted(void) const
+{
+	int prev = INT_MIN;
+    for (std::list<int>::const_iterator cur = _lst.begin(); cur != _lst.end(); cur++)
+    {
+		if (*cur < prev)
+			return (false);
+		prev = *cur;
+    }
+	return (true);	
+}
+
+int PmergeMe::getListElem(const std::list<int> &l, int idx) const
 {
     std::list<int>::const_iterator it = l.begin();
     std::advance(it, idx);
@@ -301,7 +329,6 @@ void PmergeMe::lInsert(std::list<int> &l, int put)
     l.insert(it, put);
 }
 
-// TODO: 리스트의 특징 활용해 최적화 가능
 void PmergeMe::lMergeInsertion(std::list<int> &sorted, std::list<int> &sub)
 {
     size_t t, t_p, t_pp;
