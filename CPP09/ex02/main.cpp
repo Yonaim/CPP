@@ -1,12 +1,12 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
+#include <ctime>
+#include <random>
 
-typedef struct s_number
-{
-    int n;
-    std::vector<int> *v;
-} t_number;
+// TODO: 리스트 버전 만들기
+// TODO: 가능하면 깔쌈한 재귀 버전 만들기
+// TODO: 페어로 대소비교할때 그냥 인접한 것들끼리 하기
 
 void print_vector(const std::vector<int> &v, const char *name)
 {
@@ -17,7 +17,6 @@ void print_vector(const std::vector<int> &v, const char *name)
     std::cout << '\n';
 }
 
-// ok
 void divide(const std::vector<int> &src, std::vector<int> &larger, std::vector<int> &smaller)
 {
     std::vector<int>::const_iterator it = src.begin();
@@ -35,7 +34,6 @@ void divide(const std::vector<int> &src, std::vector<int> &larger, std::vector<i
         smaller.push_back(*(src.end() - 1));
 }
 
-// ok
 int binary_search(const std::vector<int> &v, int find)
 {
     int start = 0;
@@ -49,10 +47,9 @@ int binary_search(const std::vector<int> &v, int find)
         else
             end = mid;
     }
-    return (start); // 해당 원소가 들어갈 인덱스 위치 반환
+    return (start);
 }
 
-// ok
 void insert(std::vector<int> &v, int put)
 {
     std::vector<int>::const_iterator it = v.begin() + binary_search(v, put);
@@ -90,7 +87,6 @@ void merge(std::vector<int> &main, std::vector<int> &sub)
     }
 }
 
-// ok
 // target 벡터 원소의 순서를 before와 after에 알맞게 변경하기
 void match_order(const std::vector<int> &before, const std::vector<int> &after, std::vector<int> &target)
 {
@@ -103,10 +99,7 @@ void match_order(const std::vector<int> &before, const std::vector<int> &after, 
         result.push_back(target[idx]);
     }
 	if (target.size() > after.size())
-	{
 		result.push_back(target[target.size() - 1]);
-		printf("push odd\n");
-	}
     target = result;
 }
 
@@ -128,59 +121,15 @@ std::vector<int> ford_johnson(std::vector<int> src)
     else if (src.size() == 2)
     {
         if (src[0] > src[1])
-        {
-            int tmp = src[0];
-            src[0] = src[1];
-            src[1] = tmp;
-        }
+            std::swap(src[0], src[1]);
         return (src);
     }
 
     std::vector<int> larger, smaller, sorted;
 
     divide(src, larger, smaller);
-	print_vector(larger, "larger");
-	print_vector(smaller, "smaller");
     sorted = ford_johnson(larger);
-    // print_vector(sorted, "ford sorted");
     match_order(larger, sorted, smaller);
-    // print_vector(smaller, "ford smaller");
-	printf("TRY TO MERGE...");
-	print_vector(sorted, "sorted");
-	print_vector(smaller, "smaller");
     merge(sorted, smaller);
-    // print_vector(sorted, "after sorted");
     return (sorted);
-}
-
-// 중복 허용 안함
-int main()
-{
-    int arr1[] = {10, 5, 8, 2, 3, 4, 12, 7, 11, 100, -1};
-
-    // std::vector<int> v1, v2;
-    // for (size_t i = 0; i < sizeof(arr1)/ sizeof(int); i++)
-    // 	v1.push_back(arr1[i]);
-    // for (int i = 1; i <= 10; i++)
-    // 	v2.push_back(i * 2);
-
-    std::vector<int> src, result;
-    for (size_t i = 0; i < sizeof(arr1)/ sizeof(int); i++)
-    	src.push_back(arr1[i]);
-    result = ford_johnson(src);
-
-	print_vector(result, "\nFINAL RESULT");
-
-    // int before[] = {1, 2, 3, 4};
-    // int after[] = {3, 1, 4, 2};
-    // int target[] = {5, 6, 7, 8};
-    // std::vector<int> before_v, after_v, target_v;
-    // for (int i = 0; i < 4; i++)
-    // {
-    // 	before_v.push_back(before[i]);
-    // 	after_v.push_back(after[i]);
-    // 	target_v.push_back(target[i]);
-    // }
-    // match_order(before_v, after_v, target_v);
-    // print_vector(target_v, "target");
 }
