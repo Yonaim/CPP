@@ -42,8 +42,6 @@ bool PmergeMe::isNumeric(const std::string &str)
     return (digit_exist);
 }
 
-// _vec, _lis 채우기
-// 음수, 소수, 숫자가 아닌 문자열 예외처리
 PmergeMe::PmergeMe(const char **argv)
 {
     int i;
@@ -126,7 +124,7 @@ std::vector<int> PmergeMe::vFordJohnson(std::vector<int> src)
     vDivide(src, larger, smaller);
     sorted = vFordJohnson(larger);
     vMatchOrder(larger, sorted, smaller);
-    vMerge(sorted, smaller);
+    vMergeInsertion(sorted, smaller);
     return (sorted);
 }
 
@@ -169,26 +167,40 @@ void PmergeMe::vInsert(std::vector<int> &v, int put)
     v.insert(it, put);
 }
 
-void PmergeMe::vMerge(std::vector<int> &main, std::vector<int> &sub)
+/*
+내림차순으로 삽입하기 시작할 인덱스 넘버 찾기 (부제: 왜 야콥스탈 수인가?)
+
+이번 삽입이 n회째일 때, sub에서 t(n-1)개 만큼이 sorted에 이미 삽입되었다.
+
+이번 삽입에서 탐색해야하는 원소의 개수
+= sorted의 t(n)번째까지의 원소 개수
+= t(n-1) * 2 + (t(n) - (t(n - 1) +1))
+= 2^n - 1
+
+구현상 편의를 위해 점화식 형태로 바꾼다. t(n-2)를 포함해 식을 정리하면 된다.
+=> t(n) = t(n-1) + 2t(n-2)
+*/
+void PmergeMe::vMergeInsertion(std::vector<int> &sorted, std::vector<int> &sub)
 {
     size_t t, t_p, t_pp;
 
     t = 0;
     t_p = 1;
     t_pp = 1;
-    main.insert(main.begin(), sub[0]);
+    sorted.insert(sorted.begin(), sub[0]);
     while (t < sub.size())
     {
         t = t_p + (2 * t_pp);
         for (size_t i = std::min(t, sub.size()); i > t_p; i--)
         {
-            vInsert(main, sub[i - 1]);
+            vInsert(sorted, sub[i - 1]);
         }
         t_pp = t_p;
         t_p = t;
     }
 }
 
+// 바뀐 원소의 순서에 맞춰 target 내부 원소의 순서를 조정
 void PmergeMe::vMatchOrder(const std::vector<int> &before, const std::vector<int> &after, std::vector<int> &target)
 {
     std::vector<int> result;
@@ -196,6 +208,8 @@ void PmergeMe::vMatchOrder(const std::vector<int> &before, const std::vector<int
     for (size_t i = 0; i < after.size(); i++)
     {
         std::vector<int>::const_iterator find_it = std::find(before.begin(), before.end(), after[i]);
+        if (find_it == before.end())
+            throw(std::logic_error("cannot match"));
         int idx = std::distance(before.begin(), find_it);
         result.push_back(target[idx]);
     }
