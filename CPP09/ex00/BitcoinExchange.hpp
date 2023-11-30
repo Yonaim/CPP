@@ -25,7 +25,7 @@ class BitcoinExchange
     bool isValidFormatTargetLine(const std::string &line);
     bool isIso8601DateStr(const std::string &str);
     bool isValidDate(const std::string &date);
-    bool isFloatStr(const std::string &str);
+    bool isNumeric(const std::string &str);
 
     // evaluate utils
     void evaluateByLine(const std::string &line);

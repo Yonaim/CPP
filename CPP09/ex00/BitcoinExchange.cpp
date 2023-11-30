@@ -6,15 +6,21 @@
 
 // not use
 BitcoinExchange::BitcoinExchange()
-{}
+{
+}
 
 // not use
 BitcoinExchange::BitcoinExchange(const BitcoinExchange &orig)
-{(void)orig;}
+{
+    (void)orig;
+}
 
 // not use
 BitcoinExchange &BitcoinExchange::operator=(const BitcoinExchange &orig)
-{(void)orig; return (*this);}
+{
+    (void)orig;
+    return (*this);
+}
 
 BitcoinExchange::~BitcoinExchange()
 {
@@ -125,7 +131,7 @@ bool BitcoinExchange::isValidFormatMarketPriceLine(const std::string &line)
 
     if (!isIso8601DateStr(date) || !isValidDate(date))
         return (false);
-    if (!isFloatStr(exchange_rate))
+    if (!isNumeric(exchange_rate))
         return (false);
     return (true);
 }
@@ -149,7 +155,7 @@ bool BitcoinExchange::isValidFormatTargetLine(const std::string &line)
 
     if (!isIso8601DateStr(date) || !isValidDate(date))
         return (false);
-    if (!isFloatStr(value))
+    if (!isNumeric(value))
         return (false);
     return (true);
 }
@@ -180,7 +186,7 @@ bool BitcoinExchange::isIso8601DateStr(const std::string &str)
     return (true);
 }
 
-bool BitcoinExchange::isFloatStr(const std::string &str)
+bool BitcoinExchange::isNumeric(const std::string &str)
 {
     bool point_exist = false;
     bool digit_exist = false;
