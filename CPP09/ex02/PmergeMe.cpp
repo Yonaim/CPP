@@ -1,6 +1,7 @@
 #include "PmergeMe.hpp"
 #include <iostream>
 
+// TODO: c++11 주석처리해서 제출하기
 PmergeMe::PmergeMe()
 {
 }
@@ -13,6 +14,49 @@ PmergeMe &PmergeMe::operator=(const PmergeMe &orig)
     (void)orig;
     return (*this);
 }
+
+PmergeMe::PmergeMe(const char **argv)
+{
+    int i;
+    float arg_f;
+
+    i = 0;
+    while (argv[i])
+    {
+        if (!isNumeric(argv[i]))
+            throw(InvalidInputException(argv[i]));
+        arg_f = strtof(argv[i], NULL);
+        if (arg_f < 0 || truncf(arg_f) != arg_f)
+            throw(InvalidInputException(argv[i]));
+        _vec.push_back(arg_f);
+        _lst.push_back(arg_f);
+        i++;
+    }
+}
+
+PmergeMe::~PmergeMe()
+{
+}
+
+void PmergeMe::sortAndDisplay(void)
+{
+    std::cout << "Before: ";
+    printVector(_vec);
+    std::cout << "After: ";
+    std::vector<int> sorted = _vec;
+    std::sort(sorted.begin(), sorted.end());
+    printVector(sorted);
+
+    sortVector();
+    sortList();
+
+    if (!std::is_sorted(_vec.begin(), _vec.end())) // C++11
+        throw(std::logic_error("sorting vector failed"));
+    if (!std::is_sorted(_lst.begin(), _lst.end())) // C++11
+        throw(std::logic_error("sorting list failed"));
+}
+
+/* -------------------------------- COMMON ---------------------------------- */
 
 bool PmergeMe::isNumeric(const std::string &str)
 {
@@ -42,59 +86,10 @@ bool PmergeMe::isNumeric(const std::string &str)
     return (digit_exist);
 }
 
-PmergeMe::PmergeMe(const char **argv)
-{
-    int i;
-    float arg_f;
-
-    i = 0;
-    while (argv[i])
-    {
-        if (!isNumeric(argv[i]))
-            throw(InvalidInputException(argv[i]));
-        arg_f = strtof(argv[i], NULL);
-        if (arg_f < 0 || truncf(arg_f) != arg_f)
-            throw(InvalidInputException(argv[i]));
-        _vec.push_back(arg_f);
-        _lst.push_back(arg_f);
-        i++;
-    }
-}
-
-PmergeMe::~PmergeMe()
-{
-}
-
-void PmergeMe::printVector(const std::vector<int> &v)
-{
-    for (size_t i = 0; i < v.size() - 1; i++)
-        std::cout << v[i] << ", ";
-    std::cout << *(v.end() - 1);
-    std::cout << '\n';
-}
-
-void PmergeMe::sortAndDisplay(void)
-{
-    std::cout << "Before: ";
-    printVector(_vec);
-    std::cout << "After: ";
-    std::vector<int> sorted = _vec;
-    std::sort(sorted.begin(), sorted.end());
-    printVector(sorted);
-
-    sortVector();
-    // sortList();
-
-    if (!std::is_sorted(_vec.begin(), _vec.end())) // C++11
-        throw(std::logic_error("sorting vector failed"));
-    // if (!std::is_sorted(_lst.begin(), _lst.end())) // C++11
-    //     throw(std::logic_error("sorting list failed"));
-}
-
 void PmergeMe::printProcessTime(const std::string &c_name)
 {
     std::cout << "Time to process a range of " << _vec.size() << " elements with " << c_name << " : "
-              << end_time - start_time << "ms" << std::endl;
+              << end_time - start_time << " ms" << std::endl;
 }
 
 /* -------------------------------- VECTOR ---------------------------------- */
@@ -106,6 +101,14 @@ void PmergeMe::sortVector(void)
     printVector(_vec);
     end_time = clock();
     printProcessTime("vector");
+}
+
+void PmergeMe::printVector(const std::vector<int> &v)
+{
+    for (size_t i = 0; i < v.size() - 1; i++)
+        std::cout << v[i] << ", ";
+    std::cout << *(v.end() - 1);
+    std::cout << '\n';
 }
 
 std::vector<int> PmergeMe::vFordJohnson(std::vector<int> src)
@@ -220,13 +223,121 @@ void PmergeMe::vMatchOrder(const std::vector<int> &before, const std::vector<int
 
 /* --------------------------------- LIST ----------------------------------- */
 
-// void PmergeMe::sortList(void)
-// {
-//     start_time = clock();
-//     _vec = vFordJohnson(_vec);
-//     end_time = clock();
-//     printProcessTime("list");
-// }
+void PmergeMe::sortList(void)
+{
+    start_time = clock();
+    _lst = lFordJohnson(_lst);
+    end_time = clock();
+    printProcessTime("list");
+}
+
+int PmergeMe::getListElem(const std::list<int> &l, int idx)
+{
+    std::list<int>::const_iterator it = l.begin();
+    std::advance(it, idx);
+    return (*it);
+}
+
+std::list<int> PmergeMe::lFordJohnson(std::list<int> src)
+{
+    if (src.size() == 1)
+        return (src);
+    else if (src.size() == 2)
+    {
+        if (src.front() > src.back())
+            std::swap(src.front(), src.back());
+        return (src);
+    }
+
+    std::list<int> larger, smaller, sorted;
+
+    lDivide(src, larger, smaller);
+    sorted = lFordJohnson(larger);
+    lMatchOrder(larger, sorted, smaller);
+    lMergeInsertion(sorted, smaller);
+    return (sorted);
+}
+
+void PmergeMe::lDivide(const std::list<int> &src, std::list<int> &larger, std::list<int> &smaller)
+{
+    const size_t half = src.size() / 2;
+    std::list<int>::const_iterator it_first = src.begin();
+    std::list<int>::const_iterator it_second = src.begin();
+    std::advance(it_second, half);
+
+    for (size_t i = 0; i < half; i++)
+    {
+        int e1 = *it_first;
+        int e2 = *it_second;
+        larger.push_back(std::max(e1, e2));
+        smaller.push_back(std::min(e1, e2));
+        it_first++;
+        it_second++;
+    }
+    if (src.size() % 2 == 1)
+        smaller.push_back(src.back());
+}
+
+int PmergeMe::lBinarySearch(const std::list<int> &l, int find)
+{
+    int start = 0;
+    int end = l.size();
+
+    while (start < end)
+    {
+        int mid = start + (end - start) / 2;
+        if (find > getListElem(l, mid))
+            start = mid + 1;
+        else
+            end = mid;
+    }
+    return (start);
+}
+
+void PmergeMe::lInsert(std::list<int> &l, int put)
+{
+    std::list<int>::const_iterator it = l.begin();
+    std::advance(it, lBinarySearch(l, put));
+    l.insert(it, put);
+}
+
+// TODO: 리스트의 특징 활용해 최적화 가능
+void PmergeMe::lMergeInsertion(std::list<int> &sorted, std::list<int> &sub)
+{
+    size_t t, t_p, t_pp;
+
+    t = 0;
+    t_p = 1;
+    t_pp = 1;
+    sorted.insert(sorted.begin(), sub.front());
+    while (t < sub.size())
+    {
+        t = t_p + (2 * t_pp);
+        for (size_t i = std::min(t, sub.size()); i > t_p; i--)
+        {
+            lInsert(sorted, getListElem(sub, i - 1));
+        }
+        t_pp = t_p;
+        t_p = t;
+    }
+}
+
+void PmergeMe::lMatchOrder(const std::list<int> &before, const std::list<int> &after, std::list<int> &target)
+{
+    std::list<int> result;
+
+    for (size_t i = 0; i < after.size(); i++)
+    {
+        std::list<int>::const_iterator find_it = std::find(before.begin(), before.end(), getListElem(after, i));
+        if (find_it == before.end())
+            throw(std::logic_error("cannot match"));
+        int idx = std::distance(before.begin(), find_it);
+        result.push_back(getListElem(target, idx));
+    }
+    if (target.size() > after.size())
+        result.push_back(target.back());
+    target = result;
+}
 
 /* ----------------------------- EXCEPTIONS --------------------------------- */
 

@@ -23,20 +23,30 @@ class PmergeMe
 
     // common
     bool isNumeric(const std::string &str);
-    void printVector(const std::vector<int> &v);
     void printProcessTime(const std::string &c_name);
 
     // vector
     void sortVector(void);
+    void printVector(const std::vector<int> &v);
+
     std::vector<int> vFordJohnson(std::vector<int> src);
     void vDivide(const std::vector<int> &src, std::vector<int> &larger, std::vector<int> &smaller);
     int vBinarySearch(const std::vector<int> &v, int find);
     void vInsert(std::vector<int> &v, int put);
-    void vMergeInsertion(std::vector<int> &main, std::vector<int> &sub);
+    void vMergeInsertion(std::vector<int> &sorted, std::vector<int> &sub);
     void vMatchOrder(const std::vector<int> &before, const std::vector<int> &after, std::vector<int> &target);
 
     // list
-    // void sortList(void);
+    void sortList(void);
+    int getListElem(const std::list<int> &l, int idx);
+
+    std::list<int> lFordJohnson(std::list<int> src);
+    void lDivide(const std::list<int> &src, std::list<int> &larger, std::list<int> &smaller);
+    int lBinarySearch(const std::list<int> &v, int find);
+    void lInsert(std::list<int> &v, int put);
+    void lMergeInsertion(std::list<int> &sorted, std::list<int> &sub);
+    void lMatchOrder(const std::list<int> &before, const std::list<int> &after, std::list<int> &target);
+
 
   public:
     PmergeMe(const char **argv);
