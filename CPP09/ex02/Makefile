@@ -27,4 +27,10 @@ re:
 	make fclean
 	make all
 
+jot3000:
+	./PmergeMe `jot -r 3000 1 10000 | tr '\n' ' '`
+
+seq3000:
+	./PmergeMe `seq 1 3000 | sort -R | tr '\n' ' '`
+
 .PHONY: all clean fclean re
