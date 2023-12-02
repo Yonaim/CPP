@@ -21,29 +21,24 @@ class BitcoinExchange
     BitcoinExchange &operator=(const BitcoinExchange &orig);
 
     // format check
-    bool isValidFormatMarketPriceLine(const std::string &line);
-    bool isValidFormatTargetLine(const std::string &line);
-    bool isIso8601DateStr(const std::string &str);
-    bool isValidDate(const std::string &date);
-    bool isNumeric(const std::string &str);
+    bool isValidFormatMarketPriceLine(const std::string &line) const;
+    bool isValidFormatTargetLine(const std::string &line) const;
+    bool isIso8601DateStr(const std::string &str) const;
+    bool isValidDate(const std::string &date) const;
+    bool isNumeric(const std::string &str) const;
 
     // evaluate utils
-    void evaluateByLine(const std::string &line);
-    float getMarketPrice(const std::string &date);
+    void evaluateByLine(const std::string &line) const;
+    float getMarketPrice(const std::string &date) const;
 
   public:
     BitcoinExchange(const std::string &target_path, const std::string &csv_path = "data.csv");
     ~BitcoinExchange();
 
-    // open
-    void openMarketPriceFile(const std::string &path = "./data.csv");
+    void openMarketPriceFile(const std::string &path);
     void openTargetFile(const std::string &path);
-
-    // parse
     void parseMarketPriceFile(void);
-
-    // evaluate & display
-    void evaluateAndDisplay(void);
+    void evaluate(void);
 
     // exception
     class CouldNotOpenFileException;
@@ -58,6 +53,7 @@ class BitcoinExchange::CouldNotOpenFileException : public std::exception
 {
   private:
     std::string errormsg;
+
   public:
     CouldNotOpenFileException(const std::string &filename);
     virtual ~CouldNotOpenFileException() throw(){};
@@ -68,6 +64,7 @@ class BitcoinExchange::InvalidMarketPriceFileException : public std::exception
 {
   private:
     std::string errormsg;
+
   public:
     InvalidMarketPriceFileException(int nth);
     virtual ~InvalidMarketPriceFileException() throw(){};
@@ -78,6 +75,7 @@ class BitcoinExchange::BadInputException : public std::exception
 {
   private:
     std::string errormsg;
+
   public:
     BadInputException(const std::string &input);
     virtual ~BadInputException() throw(){};

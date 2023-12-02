@@ -22,8 +22,8 @@ class PmergeMe
     PmergeMe &operator=(const PmergeMe &orig);
 
     // common
-    bool isNumeric(const std::string &str);
-    void printProcessTime(const std::string &c_name);
+    bool isNumeric(const std::string &str) const;
+    void printProcessTime(const std::string &c_name) const;
 
     // vector
     void sortVector(void);
@@ -48,7 +48,6 @@ class PmergeMe
     void lInsert(std::list<int> &v, int put);
     void lMergeInsertion(std::list<int> &sorted, std::list<int> &sub);
     void lMatchOrder(const std::list<int> &before, const std::list<int> &after, std::list<int> &target);
-
 
   public:
     PmergeMe(const char **argv);

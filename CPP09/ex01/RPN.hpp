@@ -31,18 +31,19 @@ class RPN
 
     void push(const std::string &token);
     int pop_number(void);
-    int operate_basic4(int op, int opd_1, int opd_2);
-    void skipSpaces(std::string &str);
-    void print_stack(void);
+    int operate_basic4(int op, int opd_1, int opd_2) const;
+    void skipSpaces(std::string &str) const;
+    void print_stack(void) const;
 
   public:
     RPN(std::string exp);
     ~RPN();
 
-    int result(void);
+    int result(void) const;
 
     // exception
     class UnexpectedTokenException;
+    class EmptyExpressionException;
     class ExtraOperatorException;
     class ExtraNumberException;
 };
@@ -55,6 +56,11 @@ class RPN::UnexpectedTokenException : public std::exception
   public:
     UnexpectedTokenException(const std::string &token);
     virtual ~UnexpectedTokenException() throw(){};
+    const char *what(void) const throw();
+};
+
+class RPN::EmptyExpressionException : public std::exception
+{
     const char *what(void) const throw();
 };
 

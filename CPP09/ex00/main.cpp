@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     {
         BitcoinExchange bitcoin_exchange(argv[1]);
         bitcoin_exchange.parseMarketPriceFile();
-        bitcoin_exchange.evaluateAndDisplay();
+        bitcoin_exchange.evaluate();
     }
     catch (std::exception &e)
     {

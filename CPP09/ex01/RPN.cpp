@@ -3,6 +3,29 @@
 #include <iostream>
 #include <sstream>
 
+// not use
+RPN::RPN()
+{
+}
+
+// not use
+RPN::RPN(const RPN &orig)
+{
+    (void)orig;
+}
+
+// not use
+RPN &RPN::operator=(const RPN &orig)
+{
+    if (this != &orig)
+        _stack = orig._stack;
+    return (*this);
+}
+
+RPN::~RPN()
+{
+}
+
 /*
 ex) "8 9 * 9 - 9 - 9 - 4 - 1 +"
 1. split
@@ -30,20 +53,14 @@ RPN::RPN(std::string exp)
         ss.str(exp);
         this->push(token);
     }
+    
+    if (_stack.empty())
+        throw(EmptyExpressionException());
+    else if (_stack.size() != 1)
+        throw(ExtraNumberException());
 }
 
-RPN &RPN::operator=(const RPN &orig)
-{
-    if (this != &orig)
-        _stack = orig._stack;
-    return (*this);
-}
-
-RPN::~RPN()
-{
-}
-
-void RPN::skipSpaces(std::string &str)
+void RPN::skipSpaces(std::string &str) const
 {
     size_t start = str.find_first_not_of(" ");
     if (start != std::string::npos)
@@ -96,17 +113,15 @@ int RPN::pop_number(void)
     return (popped.value);
 }
 
-int RPN::result(void)
-{
-    if (_stack.size() != 1)
-        throw(ExtraNumberException());
+int RPN::result(void) const
+{    
     t_token last = _stack.top();
     if (last.type == TOKEN_OPERATOR)
         throw(std::logic_error("does not make sence"));
     return (last.value);
 }
 
-int RPN::operate_basic4(int op, int opd_1, int opd_2)
+int RPN::operate_basic4(int op, int opd_1, int opd_2) const
 {
     switch (op)
     {
@@ -124,7 +139,7 @@ int RPN::operate_basic4(int op, int opd_1, int opd_2)
     throw(std::logic_error("does not make sence"));
 }
 
-void RPN::print_stack(void)
+void RPN::print_stack(void) const
 {
     std::stack<t_token> stack = _stack;
     while (!stack.empty())
@@ -146,6 +161,11 @@ RPN::UnexpectedTokenException::UnexpectedTokenException(const std::string &token
 const char *RPN::UnexpectedTokenException::what(void) const throw()
 {
     return (errormsg.c_str());
+}
+
+const char *RPN::EmptyExpressionException::what() const throw()
+{
+    return ("empty expression");
 }
 
 const char *RPN::ExtraOperatorException::what() const throw()

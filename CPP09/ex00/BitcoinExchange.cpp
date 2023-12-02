@@ -70,7 +70,7 @@ void BitcoinExchange::parseMarketPriceFile(void)
     }
 }
 
-void BitcoinExchange::evaluateByLine(const std::string &line)
+void BitcoinExchange::evaluateByLine(const std::string &line) const
 {
     try
     {
@@ -94,7 +94,7 @@ void BitcoinExchange::evaluateByLine(const std::string &line)
     }
 }
 
-void BitcoinExchange::evaluateAndDisplay(void)
+void BitcoinExchange::evaluate(void)
 {
     std::string line;
 
@@ -120,7 +120,7 @@ void BitcoinExchange::evaluateAndDisplay(void)
 2010-08-20,,,,0.07 <- 오류로 판별
 */
 // exchange_rate 제한은 딱히 없음
-bool BitcoinExchange::isValidFormatMarketPriceLine(const std::string &line)
+bool BitcoinExchange::isValidFormatMarketPriceLine(const std::string &line) const
 {
     size_t delim_pos = line.find(',');
     if (delim_pos == std::string::npos)
@@ -142,7 +142,7 @@ date: Year-Month-Day (월: 1~12, 일: 1~30 or 31 or 28) (윤년 확인할 것)
 value: float or a positive integer, between 0 and 1000 (0 < n < 1000)
 ex) 2011-01-03 | 3
 */
-bool BitcoinExchange::isValidFormatTargetLine(const std::string &line)
+bool BitcoinExchange::isValidFormatTargetLine(const std::string &line) const
 {
     size_t delim_pos = line.find('|');
     if (delim_pos == std::string::npos)
@@ -160,7 +160,7 @@ bool BitcoinExchange::isValidFormatTargetLine(const std::string &line)
     return (true);
 }
 
-bool BitcoinExchange::isIso8601DateStr(const std::string &str)
+bool BitcoinExchange::isIso8601DateStr(const std::string &str) const
 {
     if (str.length() != 10)
         return (false);
@@ -186,7 +186,7 @@ bool BitcoinExchange::isIso8601DateStr(const std::string &str)
     return (true);
 }
 
-bool BitcoinExchange::isNumeric(const std::string &str)
+bool BitcoinExchange::isNumeric(const std::string &str) const
 {
     bool point_exist = false;
     bool digit_exist = false;
@@ -217,7 +217,7 @@ bool BitcoinExchange::isNumeric(const std::string &str)
 // date: Year-Month-Day (월: 1~12, 일: 1~30 or 31 or 28) (윤년 확인할 것)
 // 1-31, 2-28, 3-31, 4-30, 5-31, 6-30, 7-31, 8-31, 9-30, 10-31, 11-30, 12-31
 // 값 검증
-bool BitcoinExchange::isValidDate(const std::string &date)
+bool BitcoinExchange::isValidDate(const std::string &date) const
 {
     // check leap year
     size_t delim_pos1 = date.find('-');
@@ -246,15 +246,17 @@ bool BitcoinExchange::isValidDate(const std::string &date)
     return (true);
 }
 
-float BitcoinExchange::getMarketPrice(const std::string &date)
+float BitcoinExchange::getMarketPrice(const std::string &date) const
 {
-    std::map<std::string, float>::iterator it = _market_price.find(date);
+    std::map<std::string, float>::const_iterator it = _market_price.find(date);
 
     if (it == _market_price.end())
     {
         it = _market_price.lower_bound(date);
         if (it == _market_price.begin())
             throw(TooLowerDateException());
+        else if (it == _market_price.end())
+            return ((*(--_market_price.end())).second);
     }
     return ((*it).second);
 }

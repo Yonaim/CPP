@@ -1,13 +1,18 @@
 #include "PmergeMe.hpp"
 #include <iostream>
 
+// not use
 PmergeMe::PmergeMe()
 {
 }
+
+// not use
 PmergeMe::PmergeMe(const PmergeMe &orig)
 {
     (void)orig;
 }
+
+// not use
 PmergeMe &PmergeMe::operator=(const PmergeMe &orig)
 {
     (void)orig;
@@ -62,7 +67,7 @@ void PmergeMe::sortAndDisplay(void)
 
 /* -------------------------------- COMMON ---------------------------------- */
 
-bool PmergeMe::isNumeric(const std::string &str)
+bool PmergeMe::isNumeric(const std::string &str) const
 {
     bool point_exist = false;
     bool digit_exist = false;
@@ -90,7 +95,7 @@ bool PmergeMe::isNumeric(const std::string &str)
     return (digit_exist);
 }
 
-void PmergeMe::printProcessTime(const std::string &c_name)
+void PmergeMe::printProcessTime(const std::string &c_name) const
 {
     std::cout << "Time to process a range of " << _vec.size() << " elements with " << c_name << " : "
               << end_time - start_time << " ms" << std::endl;
