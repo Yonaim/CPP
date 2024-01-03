@@ -64,7 +64,7 @@ class PmergeMe::InvalidInputException : public std::exception
 
   public:
     InvalidInputException(const std::string &arg);
-    virtual ~InvalidInputException() throw(){};
+    virtual ~InvalidInputException() throw();
     const char *what(void) const throw();
 };
 

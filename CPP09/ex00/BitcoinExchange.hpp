@@ -56,7 +56,7 @@ class BitcoinExchange::CouldNotOpenFileException : public std::exception
 
   public:
     CouldNotOpenFileException(const std::string &filename);
-    virtual ~CouldNotOpenFileException() throw(){};
+    virtual ~CouldNotOpenFileException() throw();
     const char *what(void) const throw();
 };
 
@@ -67,7 +67,7 @@ class BitcoinExchange::InvalidMarketPriceFileException : public std::exception
 
   public:
     InvalidMarketPriceFileException(int nth);
-    virtual ~InvalidMarketPriceFileException() throw(){};
+    virtual ~InvalidMarketPriceFileException() throw();
     const char *what(void) const throw();
 };
 
@@ -78,7 +78,7 @@ class BitcoinExchange::BadInputException : public std::exception
 
   public:
     BadInputException(const std::string &input);
-    virtual ~BadInputException() throw(){};
+    virtual ~BadInputException() throw();
     const char *what(void) const throw();
 };
 

@@ -309,3 +309,10 @@ const char *BitcoinExchange::TooLowerDateException::what(void) const throw()
 {
     return ("too lower date.");
 }
+
+BitcoinExchange::CouldNotOpenFileException::~CouldNotOpenFileException() throw()
+{}
+BitcoinExchange::InvalidMarketPriceFileException::~InvalidMarketPriceFileException() throw()
+{}
+BitcoinExchange::BadInputException::~BadInputException() throw()
+{}

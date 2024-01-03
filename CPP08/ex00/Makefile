@@ -5,7 +5,7 @@ CPPFLAGS		=
 
 # *********************************** PROGRAM ******************************** #
 
-NAME			=  easy_find
+NAME			= 	easy_find
 SRCS			=	main.cpp
 
 $(NAME): $(SRCS:.cpp=.o)

@@ -177,3 +177,7 @@ const char *RPN::ExtraNumberException::what() const throw()
 {
     return ("extra number");
 }
+
+RPN::UnexpectedTokenException::~UnexpectedTokenException() throw()
+{ 
+}

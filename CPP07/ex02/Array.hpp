@@ -37,6 +37,8 @@ public:
 	// deep copy
 	Array(Array &orig)
 	{
+		if (_size)
+			delete[] _elems;
 		_size = orig._size;
 		_elems = new T[_size];
 		for (size_t i = 0; i < _size; i++)

@@ -55,7 +55,7 @@ class RPN::UnexpectedTokenException : public std::exception
 
   public:
     UnexpectedTokenException(const std::string &token);
-    virtual ~UnexpectedTokenException() throw(){};
+    virtual ~UnexpectedTokenException() throw();
     const char *what(void) const throw();
 };
 

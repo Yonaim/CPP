@@ -33,8 +33,8 @@ public:
 		}
 	}
 	
-	int shortestSpan(void) const; // 인접한 수들끼리의 차를 차례대로 계산해보고 가장 작은 값 
-	int longestSpan(void) const; // 가장 큰 수와 작은 수의 차를 구하고 절댓값
+	size_t shortestSpan(void) const; // 인접한 수들끼리의 차를 차례대로 계산해보고 가장 작은 값 
+	size_t longestSpan(void) const; // 가장 큰 수와 작은 수의 차를 구하고 절댓값
 	void showStoredIntegers(void) const;
 	class AlreadyFullException : public std::exception
 	{

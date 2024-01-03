@@ -5,8 +5,8 @@ CPPFLAGS		=
 
 # *********************************** PROGRAM ******************************** #
 
-NAME			= no_you_need_form
-SRCS			= main.cpp Bureaucrat.cpp AForm.cpp \
+NAME			=	at_least_this_beats
+SRCS			= 	main.cpp Bureaucrat.cpp AForm.cpp \
 					ShrubberyCreationForm.cpp \
 					RobotomyRequestForm.cpp \
 					PresidentialPardonForm.cpp \

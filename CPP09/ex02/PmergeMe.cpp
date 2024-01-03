@@ -114,14 +114,14 @@ void PmergeMe::sortVector(void)
 
 bool PmergeMe::isVectorAscendingSorted(void) const
 {
-	int prev = INT_MIN;
+    int prev = INT_MIN;
     for (std::vector<int>::const_iterator cur = _vec.begin(); cur != _vec.end(); cur++)
     {
-		if (*cur < prev)
-			return (false);
-		prev = *cur;
+        if (*cur < prev)
+            return (false);
+        prev = *cur;
     }
-	return (true);	
+    return (true);
 }
 
 void PmergeMe::printVector(const std::vector<int> &v)
@@ -254,14 +254,14 @@ void PmergeMe::sortList(void)
 
 bool PmergeMe::isListAscendingSorted(void) const
 {
-	int prev = INT_MIN;
+    int prev = INT_MIN;
     for (std::list<int>::const_iterator cur = _lst.begin(); cur != _lst.end(); cur++)
     {
-		if (*cur < prev)
-			return (false);
-		prev = *cur;
+        if (*cur < prev)
+            return (false);
+        prev = *cur;
     }
-	return (true);	
+    return (true);
 }
 
 int PmergeMe::getListElem(const std::list<int> &l, int idx) const
@@ -381,4 +381,8 @@ PmergeMe::InvalidInputException::InvalidInputException(const std::string &arg)
 const char *PmergeMe::InvalidInputException::what(void) const throw()
 {
     return (errormsg.c_str());
+}
+
+PmergeMe::InvalidInputException::~InvalidInputException() throw()
+{
 }
